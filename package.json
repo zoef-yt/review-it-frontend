@@ -1,28 +1,36 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@apollo/client": "^3.10.8",
-    "graphql": "^16.9.0",
-    "next": "14.2.5",
-    "react": "^18",
-    "react-dom": "^18"
-  },
-  "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.5",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
-  }
+	"name": "frontend",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint"
+	},
+	"dependencies": {
+		"@apollo/client": "^3.10.8",
+		"@types/jsonwebtoken": "^9.0.6",
+		"axios": "^1.7.2",
+		"graphql": "^16.9.0",
+		"jsonwebtoken": "^9.0.2",
+		"lodash": "^4.17.21",
+		"next": "14.2.5",
+		"react": "^18",
+		"react-dom": "^18",
+		"react-intersection-observer": "^9.13.0",
+		"sharp": "^0.33.5",
+		"zod": "^3.23.8"
+	},
+	"devDependencies": {
+		"@types/lodash": "^4.17.7",
+		"@types/node": "^20",
+		"@types/react": "^18",
+		"@types/react-dom": "^18",
+		"eslint": "^8",
+		"eslint-config-next": "14.2.5",
+		"postcss": "^8",
+		"tailwindcss": "^3.4.1",
+		"typescript": "^5"
+	}
 }

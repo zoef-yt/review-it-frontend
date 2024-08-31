@@ -9,7 +9,9 @@ export async function getSession(key: string): Promise<string | null> {
 
 export async function addCookie(key: string, value: string, options?: Record<string, any>): Promise<void> {
 	try {
-		cookies().set(key, value, {
+		cookies().set({
+			name: key,
+			value,
 			httpOnly: true,
 			...options,
 		});

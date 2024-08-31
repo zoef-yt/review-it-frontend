@@ -4,9 +4,15 @@ interface LoadingIndicatorProps {
 
 export default function LoadingIndicator(props: LoadingIndicatorProps) {
 	const { size = 100 } = props;
-	console.log('size', size);
 	return (
-		<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+		<div
+			style={{
+				display: 'flex',
+				justifyContent: 'center',
+				alignItems: 'center',
+				height: '100vh',
+			}}
+		>
 			<div className='spinner'>
 				<div
 					style={{

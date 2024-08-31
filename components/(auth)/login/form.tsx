@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import { loginFormHandler } from '@/actions/formHandlers';
 import { useAuth } from '@/context/AuthContext';
@@ -27,7 +28,7 @@ export function LoginForm() {
 	};
 
 	return (
-		<main className='flex flex-col min-h-screen items-center justify-center '>
+		<main className='flex flex-col items-center justify-center'>
 			<div className='bg-white p-10 rounded-lg shadow-lg w-full max-w-md'>
 				<h1 className='text-4xl font-bold mb-8 text-center text-gray-800'>Login</h1>
 				<form className='flex flex-col space-y-6' onSubmit={handleSubmit}>
@@ -85,6 +86,11 @@ export function LoginForm() {
 						<div className={`${errorMessage ? 'h-2' : 'h-0 m-0'} transition-all`}>
 							{errorMessage && <div className='text-red-500 text-sm text-center'>{errorMessage}</div>}
 						</div>
+					</div>
+					<div className='flex justify-center mt-4'>
+						<Link href='/forgot-password' className='text-blue-500 hover:underline'>
+							Forgot Password?
+						</Link>
 					</div>
 				</form>
 			</div>

@@ -37,34 +37,88 @@ export default async function UserProfile() {
 	}
 
 	return (
-		<main className='user-profile'>
-			<h1>User Profile</h1>
-			<p>
-				<strong>Username:</strong> {user.username}
-			</p>
-			<p>
-				<strong>Email:</strong> {user.email}
-			</p>
-			<p>
-				<strong>Last Login:</strong> {new Date(user.lastLogin).toLocaleString()}
-			</p>
-			<p>
-				<strong>Account Created:</strong> {new Date(user.createdAt).toLocaleString()}
-			</p>
-			<h2>Liked Game Genres</h2>
-			<ul>{user.likedGamesGenres?.map((genre, index) => <li key={index}>{genre.name}</li>) || <p>No liked genres.</p>}</ul>
-			<h2>Played Games</h2>
-			<ul>{user.playedGames.length ? user.playedGames.map((gameId) => <li key={gameId}>{gameId}</li>) : <p>No games played.</p>}</ul>
-			<h2>Current Games</h2>
-			<ul>{user.currentGame.length ? user.currentGame.map((gameId) => <li key={gameId}>{gameId}</li>) : <p>No current games.</p>}</ul>
-			<h2>Game Reviews</h2>
-			<ul>
-				{user.gamesReviews.length ? user.gamesReviews.map((reviewId) => <li key={reviewId}>{reviewId}</li>) : <p>No reviews available.</p>}
-			</ul>
-			<Logout redirectUrl='login' />
-			<Link href='/change-password' className='block underline text-blue-400'>
-				Change Password
-			</Link>
+		<main className='p-6'>
+			<div className='flex justify-between items-center mb-6'>
+				<h1 className='text-3xl font-bold text-gray-800'>User Profile</h1>
+				<Link href='/change-password' className='underline text-blue-500 hover:text-blue-400 transition-colors duration-200'>
+					Change Password
+				</Link>
+			</div>
+
+			<div className='mb-8'>
+				<p className='text-lg mb-2'>
+					<strong>Username:</strong> {user.username}
+				</p>
+				<p className='text-lg mb-2'>
+					<strong>Email:</strong> {user.email}
+				</p>
+				<p className='text-lg mb-2'>
+					<strong>Last Login:</strong> {new Date(user.lastLogin).toLocaleString()}
+				</p>
+				<p className='text-lg mb-2'>
+					<strong>Account Created:</strong> {new Date(user.createdAt).toLocaleString()}
+				</p>
+			</div>
+
+			<div className='mb-8'>
+				<h2 className='text-2xl font-semibold mb-4 text-gray-700'>Liked Game Genres</h2>
+				{user.likedGamesGenres?.length ? (
+					<ul className='list-disc list-inside space-y-2'>
+						{user.likedGamesGenres.map((genre, index) => (
+							<li key={index} className='text-lg text-gray-600'>
+								{genre.name}
+							</li>
+						))}
+					</ul>
+				) : (
+					<p className='text-lg text-gray-600'>No liked genres.</p>
+				)}
+			</div>
+
+			<div className='mb-8'>
+				<h2 className='text-2xl font-semibold mb-4 text-gray-700'>Played Games</h2>
+				{user.playedGames.length ? (
+					<ul className='list-disc list-inside space-y-2'>
+						{user.playedGames.map((gameId) => (
+							<li key={gameId} className='text-lg text-gray-600'>
+								{gameId}
+							</li>
+						))}
+					</ul>
+				) : (
+					<p className='text-lg text-gray-600'>No games played.</p>
+				)}
+			</div>
+
+			<div className='mb-8'>
+				<h2 className='text-2xl font-semibold mb-4 text-gray-700'>Current Games</h2>
+				{user.currentGame.length ? (
+					<ul className='list-disc list-inside space-y-2'>
+						{user.currentGame.map((gameId) => (
+							<li key={gameId} className='text-lg text-gray-600'>
+								{gameId}
+							</li>
+						))}
+					</ul>
+				) : (
+					<p className='text-lg text-gray-600'>No current games.</p>
+				)}
+			</div>
+
+			<div className='mb-8'>
+				<h2 className='text-2xl font-semibold mb-4 text-gray-700'>Game Reviews</h2>
+				{user.gamesReviews.length ? (
+					<ul className='list-disc list-inside space-y-2'>
+						{user.gamesReviews.map((reviewId) => (
+							<li key={reviewId} className='text-lg text-gray-600'>
+								{reviewId}
+							</li>
+						))}
+					</ul>
+				) : (
+					<p className='text-lg text-gray-600'>No reviews available.</p>
+				)}
+			</div>
 		</main>
 	);
 }

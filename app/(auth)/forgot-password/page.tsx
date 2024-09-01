@@ -1,6 +1,8 @@
 'use client';
 
 import { forgotPasswordHandler } from '@/actions/formHandlers';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 interface ForgotPasswordFormInputs {
@@ -26,7 +28,7 @@ export default function ForgotPassword() {
 	};
 
 	return (
-		<main className='flex flex-col items-center justify-center'>
+		<main className='flex flex-col items-center justify-center bg-gray-100'>
 			<div className='bg-white p-6 rounded-lg shadow-lg w-full max-w-sm'>
 				<h1 className='text-2xl font-bold mb-4 text-center'>Forgot Password</h1>
 				{isSubmitSuccessful ? (
@@ -37,24 +39,18 @@ export default function ForgotPassword() {
 							<label className='block text-sm font-medium text-gray-700' htmlFor='email'>
 								Email Address
 							</label>
-							<input
-								type='email'
-								id='email'
-								{...register('email')}
-								className='mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
-								placeholder='Enter your email'
-							/>
+							<Input type='email' id='email' {...register('email')} className='mt-1' placeholder='Enter your email' />
 							{errors.email && <p className='text-red-500 text-sm mt-1'>{errors.email.message}</p>}
 						</div>
-						<button
+						<Button
 							type='submit'
-							className={`bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200 ${
-								isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
-							}`}
+							variant='default'
+							size='lg'
+							className={`w-full ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
 							disabled={isSubmitting}
 						>
 							{isSubmitting ? 'Sending...' : 'Send Reset Link'}
-						</button>
+						</Button>
 					</form>
 				)}
 			</div>

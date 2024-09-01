@@ -1,8 +1,10 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
+import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { removeCookie } from '@/libs';
-import { useRouter } from 'next/navigation';
 
 interface LogoutProps {
 	redirectUrl?: string;
@@ -20,13 +22,9 @@ export function Logout(props: LogoutProps) {
 			console.error('Error logging out:', error);
 		}
 	};
-
 	return (
-		<button
-			onClick={handleLogout}
-			className={`bg-blue-500 text-white py-3 px-6 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-150 hover:bg-blue-600`}
-		>
+		<Button onClick={handleLogout} className='bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition duration-200 ease-in-out'>
 			Logout
-		</button>
+		</Button>
 	);
 }

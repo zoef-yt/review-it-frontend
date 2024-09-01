@@ -1,6 +1,8 @@
-import { getAllGames } from '@/actions/getAllGames';
 import Image from 'next/image';
 import Link from 'next/link';
+
+import { getAllGames } from '@/actions/getAllGames';
+import { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 
 interface HomeScreenGamesListProps {
 	dateRange: [number, number];
@@ -27,20 +29,31 @@ export async function HomeScreenGamesList({ dateRange, titleText, skipFilter }: 
 			<h2 className='text-2xl font-semibold mb-4 sticky top-0 py-2 z-10 bg-gray-100'>{titleText}</h2>
 			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
 				{games?.map((game) => (
-					<Link href={game.slug} key={game.id} className='bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col'>
-						<div className='h-48 w-full relative mb-4'>
-							{game.backgroundImage ? (
-								<Image src={game.backgroundImage} alt={game.name} className='rounded-lg object-cover' fill />
-							) : (
-								<div className='h-full w-full flex items-center justify-center bg-gray-200 rounded-lg'>No Image</div>
-							)}
-						</div>
-						<div className='flex-1'>
-							<h3 className='text-lg font-medium mb-2'>{game.name}</h3>
-							<p className='text-sm text-gray-500'>Released: {game.released}</p>
-							<p className='text-sm text-gray-500'>Rating: {game.rating}</p>
-							<p className='text-sm text-gray-500'>Playtime: {game.playtime} hrs</p>
-						</div>
+					<Link href={game.slug} key={game.id} className='hover:no-underline'>
+						<Card className='overflow-hidden transition-shadow hover:shadow-2xl'>
+							<CardHeader className='p-0'>
+								<div className='relative h-48 w-full'>
+									{game.backgroundImage ? (
+										<Image
+											src={game.backgroundImage}
+											alt={game.name}
+											className='object-cover'
+											fill
+											style={{ borderTopLeftRadius: 'var(--radius)', borderTopRightRadius: 'var(--radius)' }}
+										/>
+									) : (
+										<div className='h-full w-full flex items-center justify-center bg-gray-200'>No Image</div>
+									)}
+								</div>
+							</CardHeader>
+							<CardContent className='p-4'>
+								<CardTitle className='text-lg font-medium'>{game.name}</CardTitle>
+								<CardDescription className='mt-2 text-sm text-muted-foreground'>Released: {game.released}</CardDescription>
+								<CardDescription className='text-sm text-muted-foreground'>Rating: {game.rating}</CardDescription>
+								<CardDescription className='text-sm text-muted-foreground'>Playtime: {game.playtime} hrs</CardDescription>
+							</CardContent>
+							<CardFooter className='p-4'>{/* Additional footer content like buttons or links can be added here */}</CardFooter>
+						</Card>
 					</Link>
 				))}
 			</div>

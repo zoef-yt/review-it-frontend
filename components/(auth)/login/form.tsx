@@ -1,9 +1,12 @@
 'use client';
 
-import Link from 'next/link';
 import { useState } from 'react';
+import Link from 'next/link';
+
 import { loginFormHandler } from '@/actions/formHandlers';
 import { useAuth } from '@/context/AuthContext';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 export function LoginForm() {
 	const { recheckSession } = useAuth();
@@ -36,8 +39,7 @@ export function LoginForm() {
 						<label className='block text-sm font-medium text-gray-700' htmlFor='usernameOrEmail'>
 							Username or Email
 						</label>
-						<input
-							className='border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
+						<Input
 							id='usernameOrEmail'
 							name='usernameOrEmail'
 							placeholder='Enter your username or email'
@@ -52,9 +54,8 @@ export function LoginForm() {
 						<label className='block text-sm font-medium text-gray-700' htmlFor='password'>
 							Password
 						</label>
-						<div className='w-full flex gap-2'>
-							<input
-								className='border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 flex-[5]'
+						<div className='w-full flex gap-2 items-center'>
+							<Input
 								id='password'
 								name='password'
 								placeholder='Enter your password'
@@ -62,30 +63,31 @@ export function LoginForm() {
 								required
 								minLength={3}
 								onChange={() => setErrorMessage(null)}
+								className='flex-1'
 							/>
-							<button
+							<Button
 								type='button'
-								className='text-gray-600 hover:text-gray-800 flex-1 text-center'
+								variant='link'
+								size='sm'
 								onClick={() => setPasswordVisible(!passwordVisible)}
 								tabIndex={-1}
+								className='text-gray-600 hover:text-gray-800'
 							>
 								{passwordVisible ? 'Hide' : 'Show'}
-							</button>
+							</Button>
 						</div>
 					</div>
 					<div>
-						<button
+						<Button
 							type='submit'
-							className={`bg-blue-500 text-white py-3 px-6 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-150 ${
-								isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'
-							} disabled:bg-slate-300 ${errorMessage ? '!mt-2 mb-1' : 'mt-3 mb-3'} transition-all block w-full`}
+							variant='default'
+							size='lg'
+							className={`w-full ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
 							disabled={isLoading || errorMessage !== null}
 						>
 							{isLoading ? 'Logging in...' : 'Login'}
-						</button>
-						<div className={`${errorMessage ? 'h-2' : 'h-0 m-0'} transition-all`}>
-							{errorMessage && <div className='text-red-500 text-sm text-center'>{errorMessage}</div>}
-						</div>
+						</Button>
+						{errorMessage && <div className='text-red-500 text-sm text-center mt-2'>{errorMessage}</div>}
 					</div>
 					<div className='flex justify-center mt-4'>
 						<Link href='/forgot-password' className='text-blue-500 hover:underline'>

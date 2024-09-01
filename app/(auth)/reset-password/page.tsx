@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +8,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ResetPasswordSchema } from '@/schema/reset-password';
 import { resetPasswordHandler } from '@/actions/formHandlers';
 import LoadingIndicator from '@/components/loadingIndicator';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 interface ResetPasswordFormInputs {
 	newPassword: string;
@@ -17,8 +19,10 @@ interface ResetPasswordFormInputs {
 function ResetPasswordComponent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 	const email = searchParams.get('email');
 	const token = searchParams.get('temp_token');
+
 	const {
 		register,
 		handleSubmit,
@@ -57,37 +61,49 @@ function ResetPasswordComponent() {
 							<label className='block text-sm font-medium text-gray-700' htmlFor='newPassword'>
 								New Password
 							</label>
-							<input
-								type='password'
-								id='newPassword'
-								{...register('newPassword')}
-								className='mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
-								placeholder='Enter your new password'
-							/>
+							<div className='w-full flex gap-2 items-center'>
+								<Input
+									id='newPassword'
+									{...register('newPassword')}
+									className='mt-1'
+									type={passwordVisible ? 'text' : 'password'}
+									placeholder='Enter your new password'
+								/>
+								<Button
+									type='button'
+									variant='link'
+									size='sm'
+									onClick={() => setPasswordVisible(!passwordVisible)}
+									tabIndex={-1}
+									className='text-gray-600 hover:text-gray-800'
+								>
+									{passwordVisible ? 'Hide' : 'Show'}
+								</Button>
+							</div>
 							{errors.newPassword && <p className='text-red-500 text-sm mt-1'>{errors.newPassword.message}</p>}
 						</div>
 						<div>
 							<label className='block text-sm font-medium text-gray-700' htmlFor='confirmPassword'>
 								Confirm Password
 							</label>
-							<input
-								type='password'
+							<Input
+								type={passwordVisible ? 'text' : 'password'}
 								id='confirmPassword'
 								{...register('confirmPassword')}
-								className='mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+								className='mt-1'
 								placeholder='Confirm your new password'
 							/>
 							{errors.confirmPassword && <p className='text-red-500 text-sm mt-1'>{errors.confirmPassword.message}</p>}
 						</div>
-						<button
+						<Button
 							type='submit'
-							className={`bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200 ${
-								isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
-							}`}
+							variant='default'
+							size='lg'
+							className={`w-full ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
 							disabled={isSubmitting}
 						>
 							{isSubmitting ? 'Resetting...' : 'Reset Password'}
-						</button>
+						</Button>
 					</form>
 				)}
 			</div>

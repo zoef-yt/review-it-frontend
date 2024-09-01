@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function Home() {
 	return (
-		<main className='flex flex-col items-center pt-4 px-4'>
+		<main className='flex flex-col items-center py-4 px-4'>
 			<div className='space-y-12'>
 				<HomeScreenGamesList dateRange={[0, 7]} titleText='Next Week Releases' skipFilter={true} />
 				<HomeScreenGamesList dateRange={[0, 0]} titleText='Today' />

@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation';
 import { validateUsername, signupFormHandler } from '@/actions/formHandlers';
 import { useAuth } from '@/context/AuthContext';
 import { SignupSchema } from '@/schema/signup';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 interface UsernameForm {
 	username: string;
@@ -22,6 +24,7 @@ interface SignupFormFields extends UsernameForm {
 export default function SignupForm() {
 	const { recheckSession } = useAuth();
 	const router = useRouter();
+	const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 	const [isUsernameValid, setIsUsernameValid] = useState(false);
 
 	const {
@@ -78,94 +81,84 @@ export default function SignupForm() {
 							<label className='block text-sm font-medium text-gray-700' htmlFor='username'>
 								Username
 							</label>
-							<input
-								{...register('username')}
-								className='border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
-								id='username'
-								placeholder='Enter your username'
-								type='text'
-								autoFocus
-							/>
+							<Input {...register('username')} id='username' placeholder='Enter your username' type='text' autoFocus />
 							{errors.username && <p className='text-red-500 text-sm'>{errors.username.message}</p>}
 						</div>
-						<button
+						<Button
 							type='submit'
-							className={`bg-blue-500 text-white py-3 px-6 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-								isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'
-							} transition ease-in-out duration-150 block w-full`}
+							variant='default'
+							size='lg'
+							className={isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
 							disabled={isSubmitting}
 						>
 							{isSubmitting ? 'Validating...' : 'Check Username'}
-						</button>
+						</Button>
 					</form>
 				) : (
 					<form onSubmit={handleSubmit(handleSignupSubmit)} className='flex flex-col space-y-6'>
 						<div>
-							<div className='flex gap-2'>
+							<div className='flex justify-between items-center '>
 								<label className='block text-sm font-medium text-gray-700' htmlFor='username'>
 									Username
 								</label>
-								<button type='button' className='text-blue-500 hover:underline text-sm' onClick={handleEditUsername}>
+								<Button type='button' variant='link' size='sm' onClick={handleEditUsername}>
 									Edit
-								</button>
+								</Button>
 							</div>
-							<input
-								{...register('username')}
-								className='border border-green-500 rounded-lg p-3 w-full bg-gray-200'
-								id='username'
-								readOnly
-								disabled
-							/>
+							<Input {...register('username')} id='username' readOnly disabled className='bg-gray-200 border-green-500' />
 						</div>
 						<div>
 							<label className='block text-sm font-medium text-gray-700' htmlFor='email'>
 								Email
 							</label>
-							<input
-								{...register('email')}
-								className='border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
-								id='email'
-								placeholder='Enter your email'
-								type='email'
-								autoFocus
-							/>
+							<Input {...register('email')} id='email' placeholder='Enter your email' type='email' autoFocus />
 							{errors.email && <p className='text-red-500 text-sm'>{errors.email.message}</p>}
 						</div>
 						<div>
 							<label className='block text-sm font-medium text-gray-700' htmlFor='password'>
 								Password
 							</label>
-							<input
-								{...register('password')}
-								className='border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
-								id='password'
-								placeholder='Enter your password'
-								type='password'
-							/>
+							<div className='w-full flex gap-2 items-center'>
+								<Input
+									{...register('password')}
+									id='password'
+									placeholder='Enter your password'
+									type={passwordVisible ? 'text' : 'password'}
+								/>
+								<Button
+									type='button'
+									variant='link'
+									size='sm'
+									onClick={() => setPasswordVisible(!passwordVisible)}
+									tabIndex={-1}
+									className='text-gray-600 hover:text-gray-800'
+								>
+									{passwordVisible ? 'Hide' : 'Show'}
+								</Button>
+							</div>
 							{errors.password && <p className='text-red-500 text-sm'>{errors.password.message}</p>}
 						</div>
 						<div>
 							<label className='block text-sm font-medium text-gray-700' htmlFor='confirmPassword'>
 								Confirm Password
 							</label>
-							<input
+							<Input
 								{...register('confirmPassword')}
-								className='border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
 								id='confirmPassword'
 								placeholder='Confirm your password'
-								type='password'
+								type={passwordVisible ? 'text' : 'password'}
 							/>
 							{errors.confirmPassword && <p className='text-red-500 text-sm'>{errors.confirmPassword.message}</p>}
 						</div>
-						<button
+						<Button
 							type='submit'
-							className={`bg-blue-500 text-white py-3 px-6 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-								isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'
-							} transition ease-in-out duration-150 block w-full`}
+							variant='default'
+							size='lg'
+							className={isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
 							disabled={isSubmitting}
 						>
 							{isSubmitting ? 'Signing Up...' : 'Sign Up'}
-						</button>
+						</Button>
 					</form>
 				)}
 			</div>

@@ -20,7 +20,8 @@ export function LoginForm() {
 		setIsLoading(true);
 		setErrorMessage(null);
 		const formData = new FormData(event.currentTarget);
-		const result = await loginFormHandler(formData);
+		const navigator = window.navigator.userAgent;
+		const result = await loginFormHandler(formData, navigator);
 		setIsLoading(false);
 		if (!result.success) {
 			setErrorMessage(typeof result.error === 'string' ? result.error : Object.values(result.error).join(', '));

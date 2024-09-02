@@ -22,7 +22,7 @@ export default async function SingleGamePage({ params }: SingleGamePageProps) {
 	return (
 		<main className='mx-auto px-4 py-6'>
 			<header className='relative w-full h-64 mb-8'>
-				<Image src={game.backgroundImage} alt={game.name} layout='fill' objectFit='cover' className='rounded-lg shadow-lg' />
+				<Image src={game.backgroundImage} alt={game.name} fill objectFit='cover' className='rounded-lg shadow-lg' />
 				<div className='absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg'>
 					<h1 className='text-white text-4xl font-bold'>{game.name}</h1>
 				</div>

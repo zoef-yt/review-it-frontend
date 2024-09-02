@@ -11,7 +11,7 @@ interface GameTileProps {
 export function GameTile(props: GameTileProps) {
 	const { game, shouldLazyLoad } = props;
 	return (
-		<Link href={game.slug} key={game.id} className='hover:no-underline'>
+		<Link href={`/game/${game.slug}`} key={game.id} className='hover:no-underline'>
 			<Card className='overflow-hidden transition-shadow hover:shadow-2xl'>
 				<CardHeader className='p-0'>
 					<div className='relative h-48 w-full'>

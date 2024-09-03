@@ -1,6 +1,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
+
 export async function getSession(key: string): Promise<string | null> {
 	const session = cookies().get(key)?.value;
 	if (!session) return null;

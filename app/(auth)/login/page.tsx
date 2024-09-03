@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useAuth } from '@/context/AuthContext';
-import { LoginForm } from '@/components/(auth)/login/form';
+import { LoginForm } from '@/components/auth/login/form';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function LoginPage() {

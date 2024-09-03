@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
-import { Logout } from '../(auth)/logout/button';
+import { Logout } from '../auth/logout/button';
 
 export function NavigationBarHome() {
 	const { isAuthorized } = useAuth();

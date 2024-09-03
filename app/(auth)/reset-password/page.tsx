@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { ResetPasswordSchema } from '@/schema/reset-password';
+import { ResetPasswordSchema } from '@/components/auth/schema/reset-password';
 import { resetPasswordHandler } from '@/actions/formHandlers';
 import LoadingIndicator from '@/components/loadingIndicator';
 import { Input } from '@/components/ui/input';

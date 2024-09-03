@@ -1,7 +1,7 @@
-import { Logout } from '@/components/(auth)/logout/button';
-import { getSession } from '@/libs';
-import axios from 'axios';
 import Link from 'next/link';
+import axios from 'axios';
+
+import { getSession } from '@/libs';
 
 interface UserProfileProps {
 	username: string;

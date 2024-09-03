@@ -1,16 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import LoadingIndicator from '@/components/loadingIndicator';
 import { useAuth } from '@/context/AuthContext';
-import { ChangePasswordSchema } from '@/schema/changePassword';
+import { ChangePasswordSchema } from '@/components/auth/schema/changePassword';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { changePassworHandler } from '@/actions/formHandlers';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
 
 interface ChangePasswordFormInputs {
 	currentPassword: string;

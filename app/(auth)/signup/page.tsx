@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 
 import { validateUsername, signupFormHandler } from '@/actions/formHandlers';
 import { useAuth } from '@/context/AuthContext';
-import { SignupSchema } from '@/schema/signup';
+import { SignupSchema } from '@/components/auth/schema/signup';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 

@@ -18,7 +18,7 @@ export default function ForgotPassword() {
 	} = useForm<ForgotPasswordFormInputs>();
 
 	const onSubmit: SubmitHandler<ForgotPasswordFormInputs> = async (data: ForgotPasswordFormInputs) => {
-		const result = await forgotPasswordHandler(data);
+		const result = await forgotPasswordHandler({ email: data.email, navigator: window.navigator.userAgent });
 		if (!result.success) {
 			setError('email', {
 				type: 'manual',

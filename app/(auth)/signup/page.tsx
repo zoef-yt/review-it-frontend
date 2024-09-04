@@ -53,7 +53,7 @@ export default function SignupForm() {
 	const handleSignupSubmit: SubmitHandler<SignupFormFields> = async (data) => {
 		const result = await signupFormHandler(data);
 		if (result.success) {
-			recheckSession();
+			await recheckSession();
 			router.push('/');
 		} else {
 			if (result.error.includes('email')) {

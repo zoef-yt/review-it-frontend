@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Loading() {
 	return (
-		<>
+		<main className='space-y-8 my-4'>
 			{[...Array(4)].map((_, outerIndex) => (
 				<div key={outerIndex}>
 					<Skeleton className='h-8 w-1/3 mb-6' />
@@ -20,6 +20,6 @@ export default function Loading() {
 					</div>
 				</div>
 			))}
-		</>
+		</main>
 	);
 }

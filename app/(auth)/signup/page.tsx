@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 import { validateUsername, signupFormHandler } from '@/actions/formHandlers';
 import { useAuth } from '@/context/AuthContext';
@@ -93,6 +94,9 @@ export default function SignupForm() {
 						>
 							{isSubmitting ? 'Validating...' : 'Check Username'}
 						</Button>
+						<Link href='/login' className='text-blue-600 hover:underline text-center mt-4'>
+							Already have an account? Login
+						</Link>
 					</form>
 				) : (
 					<form onSubmit={handleSubmit(handleSignupSubmit)} className='flex flex-col space-y-6'>

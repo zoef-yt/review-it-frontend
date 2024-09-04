@@ -59,6 +59,9 @@ export function LoginForm() {
 							placeholder='Enter your username or email'
 							type='text'
 							autoFocus
+							autoCapitalize='off'
+							inputMode='email'
+							autoComplete='email'
 							onChange={() => clearErrors('usernameOrEmail')}
 						/>
 						{errors.usernameOrEmail && <p className='text-red-500 text-sm'>{errors.usernameOrEmail.message}</p>}
@@ -103,6 +106,11 @@ export function LoginForm() {
 					<div className='flex justify-center mt-4'>
 						<Link href='/forgot-password' className='text-blue-500 hover:underline'>
 							Forgot Password?
+						</Link>
+					</div>
+					<div className='flex justify-center mt-4'>
+						<Link href='/signup' className='text-blue-500 hover:underline'>
+							Don&apos;t have an account? Sign up
 						</Link>
 					</div>
 				</form>

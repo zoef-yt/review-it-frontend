@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 
 import { Providers } from '@/providers/providers';
 import { NavigationBarHome } from '@/components/home/navigationBar';
+import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,9 +22,10 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<Providers>
-				<body className={`${inter.className} bg-gray-100 flex flex-col min-h-screen max-w-screen-xl mx-auto [&_main]:flex-grow`}>
+				<body className={`${inter.className} bg-gray-100 flex flex-col min-h-screen `}>
 					<NavigationBarHome />
-					{children}
+					<div className='flex max-w-screen-xl mx-auto [&_main]:flex-grow flex-grow w-full'>{children}</div>
+					<Toaster />
 				</body>
 			</Providers>
 		</html>

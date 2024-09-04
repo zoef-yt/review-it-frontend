@@ -1,3 +1,5 @@
+'use server';
+
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
@@ -15,16 +17,21 @@ export const loginFormHandler = async (
 ): Promise<LoginFormHandlerResult> => {
 	try {
 		const userInfo = await getClientInfo(navigator);
+		const data = {
+			userInfo,
+			password: validatedData.password,
+			username: validatedData.usernameOrEmail.includes('@') ? undefined : validatedData.usernameOrEmail,
+			email: validatedData.usernameOrEmail.includes('@') ? validatedData.usernameOrEmail : undefined,
+		};
 		const response = await axios.post(
 			`${process.env.NEXT_PUBLIC_API_BACKEND}auth/login`,
-			{ ...validatedData, userInfo },
+			{ ...data },
 			{
 				headers: {
 					'Content-Type': 'application/json',
 				},
 			},
 		);
-
 		if (response.data?.accessToken) {
 			const decodedToken = jwt.decode(response.data.accessToken) as jwt.JwtPayload;
 

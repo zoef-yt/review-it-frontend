@@ -22,10 +22,10 @@ export default async function SingleGamePage({ params }: SingleGamePageProps) {
 		return <SingleGameToast />;
 	}
 
-	const { backgroundImage, genres, name, platforms, rating, released, esrbRating, playtime, description } = game;
+	const { backgroundImage, genres, name, platforms, rating, released, playtime, description } = game;
 
 	return (
-		<main className='mx-auto px-4 py-6'>
+		<div className='mx-auto px-4'>
 			<header className='relative w-full h-64 md:h-80 mb-6 overflow-hidden'>
 				<Image
 					src={backgroundImage}
@@ -58,7 +58,6 @@ export default async function SingleGamePage({ params }: SingleGamePageProps) {
 					</div>
 				</div>
 			</header>
-
 			<section className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-8'>
 				<Card className='p-4 text-center hover:shadow-2xl transition-all'>
 					<h2 className='text-2xl font-semibold mb-2'>Release Date</h2>
@@ -83,6 +82,6 @@ export default async function SingleGamePage({ params }: SingleGamePageProps) {
 				</Card>
 				<CustomRatingCard rating={rating} />
 			</section>
-		</main>
+		</div>
 	);
 }

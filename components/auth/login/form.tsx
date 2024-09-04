@@ -33,7 +33,6 @@ export function LoginForm() {
 	const onSubmit: SubmitHandler<LoginFormFields> = async (data) => {
 		const navigator = window.navigator.userAgent;
 		const result = await loginFormHandler(data, navigator);
-
 		if (!result.success) {
 			setError('usernameOrEmail', {
 				type: 'manual',

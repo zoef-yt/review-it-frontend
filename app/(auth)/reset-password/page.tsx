@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
 
 import { ResetPasswordSchema } from '@/components/auth/schema/reset-password';
 import { resetPasswordHandler } from '@/actions/formHandlers';
@@ -54,7 +55,12 @@ function ResetPasswordComponent() {
 			<div className='bg-white p-6 rounded-lg shadow-lg w-full max-w-sm'>
 				<h1 className='text-2xl font-bold mb-4 text-center'>Reset Password</h1>
 				{isSubmitSuccessful ? (
-					<p className='text-green-500 text-center'>Password reset successful. You can now log in with your new password.</p>
+					<div className='flex flex-col'>
+						<p className='text-green-500 text-center'>Password reset successful. You can now log in with your new password.</p>
+						<Link href='/login' className='text-blue-500 text-center underline'>
+							Login
+						</Link>
+					</div>
 				) : (
 					<form onSubmit={handleSubmit(onSubmit)} className='flex flex-col space-y-4'>
 						<div>

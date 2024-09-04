@@ -27,7 +27,7 @@ export default function LoginPage() {
 
 	useEffect(() => {
 		if (isAuthorized && !loading) {
-			router.back();
+			router.push('/');
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAuthorized, loading, router]);

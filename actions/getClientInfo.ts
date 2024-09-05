@@ -1,7 +1,6 @@
 'use server';
 
-function formatDateTime() {
-	const date = new Date();
+function formatDateTime(date: Date) {
 	const time = date
 		.toLocaleTimeString('en-US', {
 			hour: 'numeric',
@@ -16,7 +15,7 @@ function formatDateTime() {
 	return `${time}, ${day}${suffix} ${month} ${year}`;
 }
 
-export async function getClientInfo(userAgent: string) {
+export async function getClientInfo(userAgent: string, date: Date) {
 	let device;
 	if (userAgent.match(/Android/i)) {
 		device = 'Android';
@@ -36,6 +35,6 @@ export async function getClientInfo(userAgent: string) {
 	return {
 		device,
 		ipAddress: ipData.ip,
-		loginTime: formatDateTime(),
+		loginTime: formatDateTime(date),
 	};
 }

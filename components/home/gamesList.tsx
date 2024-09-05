@@ -19,7 +19,7 @@ export async function HomeScreenGamesList({ dateRange, titleText, skipFilter, sh
 		},
 	});
 
-	if (games?.length === 0) {
+	if (!games || games?.length === 0) {
 		return null;
 	}
 	return (

@@ -7,10 +7,10 @@ import LoadingIndicator from '@/components/loadingIndicator';
 import { useAuth } from '@/context/AuthContext';
 import { ChangePasswordSchema } from '@/components/auth/schema/changePassword';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { changePassworHandler } from '@/actions/formHandlers';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { changePassworHandler } from '@/actions/form/changePasswordHandler';
 
 interface ChangePasswordFormInputs {
 	currentPassword: string;
@@ -44,7 +44,10 @@ export default function ChangePassword() {
 		return null;
 	}
 	const onSubmit = async (data: ChangePasswordFormInputs) => {
-		const result = await changePassworHandler(data);
+		const { currentPassword, newPassword } = data;
+		const navigator = window.navigator.userAgent;
+		const date = new Date();
+		const result = await changePassworHandler({ currentPassword, newPassword, navigator, date });
 		if (result && result.success) {
 			await recheckSession();
 			router.push('/login');

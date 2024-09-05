@@ -1,16 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-import { validateUsername, signupFormHandler } from '@/actions/formHandlers';
 import { useAuth } from '@/context/AuthContext';
 import { SignupSchema } from '@/components/auth/schema/signup';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { signupFormHandler } from '@/actions/form/signupHandler';
+import { validateUsername } from '@/actions/form/validateUsername';
 
 interface UsernameForm {
 	username: string;
@@ -23,7 +25,7 @@ interface SignupFormFields extends UsernameForm {
 }
 
 export default function SignupForm() {
-	const { recheckSession } = useAuth();
+	const { recheckSession, loading, isAuthorized } = useAuth();
 	const router = useRouter();
 	const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 	const [isUsernameValid, setIsUsernameValid] = useState(false);
@@ -38,6 +40,43 @@ export default function SignupForm() {
 	} = useForm<SignupFormFields>({
 		resolver: zodResolver(SignupSchema),
 	});
+
+	const checkSession = async () => {
+		try {
+			await recheckSession();
+		} catch (error) {
+			console.error('Error rechecking session:', error);
+		} finally {
+		}
+	};
+
+	useEffect(() => {
+		checkSession();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		if (isAuthorized && !loading) {
+			router.push('/');
+		}
+	}, [isAuthorized, router, loading]);
+
+	if (loading || isAuthorized) {
+		return (
+			<main className='flex flex-col items-center justify-center'>
+				<div className='bg-white p-10 rounded-lg shadow-lg w-full max-w-md'>
+					<Skeleton className='h-10 rounded mb-8' />
+					<div className='flex flex-col space-y-6'>
+						<div>
+							<Skeleton className='h-4 rounded w-1/3 mb-2' />
+							<Skeleton className='h-10 rounded w-full' />
+						</div>
+						<Skeleton className='h-12 rounded w-full' />
+					</div>
+				</div>
+			</main>
+		);
+	}
 
 	const handleUsernameSubmit: SubmitHandler<UsernameForm> = async (data: { username: string }) => {
 		const result = await validateUsername(data.username);

@@ -24,6 +24,7 @@ export function LoginForm() {
 		register,
 		handleSubmit,
 		setError,
+		setValue,
 		clearErrors,
 		formState: { errors, isSubmitting },
 	} = useForm<LoginFormFields>({
@@ -32,7 +33,7 @@ export function LoginForm() {
 
 	const onSubmit: SubmitHandler<LoginFormFields> = async (data) => {
 		const navigator = window.navigator.userAgent;
-		const result = await loginFormHandler(data, navigator);
+		const result = await loginFormHandler({ ...data, navigator, date: new Date() });
 		if (!result.success) {
 			setError('usernameOrEmail', {
 				type: 'manual',
@@ -54,14 +55,17 @@ export function LoginForm() {
 						</label>
 						<Input
 							id='usernameOrEmail'
-							{...register('usernameOrEmail')}
+							{...register('usernameOrEmail', { required: 'Username or email is required' })}
 							placeholder='Enter your username or email'
 							type='text'
 							autoFocus
 							autoCapitalize='off'
 							inputMode='email'
 							autoComplete='email'
-							onChange={() => clearErrors('usernameOrEmail')}
+							onChange={(e) => {
+								clearErrors('usernameOrEmail');
+								setValue('usernameOrEmail', e.target.value);
+							}}
 						/>
 						{errors.usernameOrEmail && <p className='text-red-500 text-sm'>{errors.usernameOrEmail.message}</p>}
 					</div>
@@ -72,11 +76,14 @@ export function LoginForm() {
 						<div className='w-full flex gap-2 items-center'>
 							<Input
 								id='password'
-								{...register('password')}
+								{...register('password', { required: 'Password is required' })}
 								placeholder='Enter your password'
 								type={passwordVisible ? 'text' : 'password'}
 								className='flex-1'
-								onChange={() => clearErrors('password')}
+								onChange={(e) => {
+									clearErrors('password');
+									setValue('password', e.target.value);
+								}}
 							/>
 							<Button
 								type='button'

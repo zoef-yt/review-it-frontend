@@ -31,7 +31,9 @@ export default async function UserProfile() {
 		return (
 			<main className='flex justify-center items-center'>
 				No user data available.
-				<Link href='/login'> Go to the login page</Link>
+				<Link href='/login' className='underline text-blue-500 hover:text-blue-400 transition-colors duration-200'>
+					Go to the login page
+				</Link>
 			</main>
 		);
 	}

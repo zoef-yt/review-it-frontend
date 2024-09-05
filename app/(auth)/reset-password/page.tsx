@@ -7,10 +7,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 
 import { ResetPasswordSchema } from '@/components/auth/schema/reset-password';
-import { resetPasswordHandler } from '@/actions/formHandlers';
-import LoadingIndicator from '@/components/loadingIndicator';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { resetPasswordHandler } from '@/actions/form/resetPasswordHandler';
 
 interface ResetPasswordFormInputs {
 	newPassword: string;
@@ -40,7 +40,8 @@ function ResetPasswordComponent() {
 
 	const onSubmit: SubmitHandler<ResetPasswordFormInputs> = async (data) => {
 		if (email && token) {
-			const result = await resetPasswordHandler({ ...data, email, token });
+			const navigator = window.navigator.userAgent;
+			const result = await resetPasswordHandler({ ...data, email, token, navigator, date: new Date() });
 			if (!result.success) {
 				setError('newPassword', {
 					type: 'manual',
@@ -117,9 +118,30 @@ function ResetPasswordComponent() {
 	);
 }
 
+function Loader() {
+	return (
+		<main className='flex flex-col items-center justify-center'>
+			<div className='bg-white p-10 rounded-lg shadow-lg w-full max-w-md'>
+				<Skeleton className='h-10 rounded mb-8' />
+				<div className='flex flex-col space-y-6'>
+					<div>
+						<Skeleton className='h-4 rounded w-1/3 mb-2' />
+						<Skeleton className='h-10 rounded w-full' />
+					</div>
+					<div>
+						<Skeleton className='h-4 rounded w-1/3 mb-2' />
+						<Skeleton className='h-10 rounded w-full' />
+					</div>
+					<Skeleton className='h-12 rounded w-full' />
+				</div>
+			</div>
+		</main>
+	);
+}
+
 export default function ResetPasswordPage() {
 	return (
-		<Suspense fallback={<LoadingIndicator />}>
+		<Suspense fallback={<Loader />}>
 			<ResetPasswordComponent />
 		</Suspense>
 	);

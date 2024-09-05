@@ -29,7 +29,6 @@ export default function LoginPage() {
 		if (isAuthorized && !loading) {
 			router.push('/');
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAuthorized, loading, router]);
 
 	if (loading || isAuthorized) {

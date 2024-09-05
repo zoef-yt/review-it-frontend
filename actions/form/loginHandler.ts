@@ -11,17 +11,21 @@ export interface LoginFormHandlerResult {
 	error?: string;
 }
 
-export const loginFormHandler = async (
-	validatedData: { usernameOrEmail: string; password: string },
-	navigator: string,
-): Promise<LoginFormHandlerResult> => {
+interface LoginFormHandler {
+	usernameOrEmail: string;
+	password: string;
+	navigator: string;
+	date: Date;
+}
+export const loginFormHandler = async (props: LoginFormHandler): Promise<LoginFormHandlerResult> => {
+	const { usernameOrEmail, password, navigator, date } = props;
 	try {
-		const userInfo = await getClientInfo(navigator);
+		const userInfo = await getClientInfo(navigator, date);
 		const data = {
 			userInfo,
-			password: validatedData.password,
-			username: validatedData.usernameOrEmail.includes('@') ? undefined : validatedData.usernameOrEmail,
-			email: validatedData.usernameOrEmail.includes('@') ? validatedData.usernameOrEmail : undefined,
+			password: password,
+			username: usernameOrEmail.includes('@') ? undefined : usernameOrEmail,
+			email: usernameOrEmail.includes('@') ? usernameOrEmail : undefined,
 		};
 		const response = await axios.post(
 			`${process.env.NEXT_PUBLIC_API_BACKEND}auth/login`,
@@ -55,7 +59,7 @@ export const loginFormHandler = async (
 			error: 'Failed to retrieve access token',
 		};
 	} catch (error) {
-		console.error('Login failed:', error);
+		// console.error('Login failed:', error);
 		return {
 			success: false,
 			error: axios.isAxiosError(error) ? error.response?.data?.message || 'An unexpected error occurred' : 'An unexpected error occurred',

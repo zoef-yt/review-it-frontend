@@ -1,20 +1,18 @@
 'use server';
 
 import axios from 'axios';
-import { getClientInfo } from '../getClientInfo';
+
+import { ClientInfo } from '@/commonTypes';
 
 interface ResetPasswordInput {
 	newPassword: string;
 	email: string;
 	token: string;
-	navigator: string;
-	date: Date;
+	userInfo: ClientInfo;
 }
 
 export async function resetPasswordHandler(data: ResetPasswordInput): Promise<any> {
-	const { newPassword, email, token, date, navigator } = data;
-
-	const userInfo = await getClientInfo(navigator, date);
+	const { newPassword, email, token, userInfo } = data;
 	try {
 		const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BACKEND}auth/reset-password`, {
 			newPassword,

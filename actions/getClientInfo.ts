@@ -2,11 +2,7 @@
 
 import axios from 'axios';
 
-type ClientInfo = {
-	device: string;
-	ipAddress: string;
-	time: string;
-};
+import { ClientInfo } from '@/commonTypes';
 
 function formatDateTime(date: Date): string {
 	const time = date

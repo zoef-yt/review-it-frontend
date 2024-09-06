@@ -2,15 +2,16 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import LoadingIndicator from '@/components/loadingIndicator';
 import { useAuth } from '@/context/AuthContext';
 import { ChangePasswordSchema } from '@/components/auth/schema/changePassword';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { changePassworHandler } from '@/actions/form/changePasswordHandler';
+import { getClientInfo } from '@/actions/getClientInfo';
 
 interface ChangePasswordFormInputs {
 	currentPassword: string;
@@ -43,11 +44,12 @@ export default function ChangePassword() {
 		router.push('/login');
 		return null;
 	}
+
 	const onSubmit = async (data: ChangePasswordFormInputs) => {
 		const { currentPassword, newPassword } = data;
 		const navigator = window.navigator.userAgent;
-		const date = new Date();
-		const result = await changePassworHandler({ currentPassword, newPassword, navigator, date });
+		const userInfo = await getClientInfo(navigator, new Date());
+		const result = await changePassworHandler({ currentPassword, newPassword, userInfo });
 		if (result && result.success) {
 			await recheckSession();
 			router.push('/login');

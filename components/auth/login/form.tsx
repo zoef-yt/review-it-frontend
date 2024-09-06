@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { LoginSchema } from '../schema/login';
 import { loginFormHandler } from '@/actions/form/loginHandler';
+import { getClientInfo } from '@/actions/getClientInfo';
 
 interface LoginFormFields {
 	usernameOrEmail: string;
@@ -33,7 +34,8 @@ export function LoginForm() {
 
 	const onSubmit: SubmitHandler<LoginFormFields> = async (data) => {
 		const navigator = window.navigator.userAgent;
-		const result = await loginFormHandler({ ...data, navigator, date: new Date() });
+		const userInfo = await getClientInfo(navigator, new Date());
+		const result = await loginFormHandler({ ...data, userInfo });
 		if (!result.success) {
 			setError('usernameOrEmail', {
 				type: 'manual',

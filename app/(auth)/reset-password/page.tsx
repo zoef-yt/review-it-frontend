@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { resetPasswordHandler } from '@/actions/form/resetPasswordHandler';
+import { getClientInfo } from '@/actions/getClientInfo';
 
 interface ResetPasswordFormInputs {
 	newPassword: string;
@@ -41,7 +42,8 @@ function ResetPasswordComponent() {
 	const onSubmit: SubmitHandler<ResetPasswordFormInputs> = async (data) => {
 		if (email && token) {
 			const navigator = window.navigator.userAgent;
-			const result = await resetPasswordHandler({ ...data, email, token, navigator, date: new Date() });
+			const userInfo = await getClientInfo(navigator, new Date());
+			const result = await resetPasswordHandler({ ...data, email, token, userInfo });
 			if (!result.success) {
 				setError('newPassword', {
 					type: 'manual',

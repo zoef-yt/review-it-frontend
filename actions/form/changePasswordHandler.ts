@@ -1,18 +1,17 @@
 'use server';
 
-import { getSession, removeCookie } from '@/libs';
-import { getClientInfo } from '../getClientInfo';
 import axios, { AxiosError } from 'axios';
+
+import { getSession, removeCookie } from '@/libs';
+import { ClientInfo } from '@/commonTypes';
 
 interface ChangePasswordFormInputs {
 	currentPassword: string;
 	newPassword: string;
-	navigator: string;
-	date: Date;
+	userInfo: ClientInfo;
 }
 export const changePassworHandler = async (data: ChangePasswordFormInputs): Promise<any> => {
-	const { currentPassword, newPassword, date, navigator } = data;
-	const userInfo = await getClientInfo(navigator, date);
+	const { currentPassword, newPassword, userInfo } = data;
 	const token = await getSession('accessToken');
 	try {
 		const response = await axios.post(

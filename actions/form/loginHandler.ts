@@ -4,7 +4,7 @@ import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
 import { addCookie } from '@/libs';
-import { getClientInfo } from '../getClientInfo';
+import { ClientInfo } from '@/commonTypes';
 
 export interface LoginFormHandlerResult {
 	success: boolean;
@@ -14,13 +14,11 @@ export interface LoginFormHandlerResult {
 interface LoginFormHandler {
 	usernameOrEmail: string;
 	password: string;
-	navigator: string;
-	date: Date;
+	userInfo: ClientInfo;
 }
 export const loginFormHandler = async (props: LoginFormHandler): Promise<LoginFormHandlerResult> => {
-	const { usernameOrEmail, password, navigator, date } = props;
+	const { usernameOrEmail, password, userInfo } = props;
 	try {
-		const userInfo = await getClientInfo(navigator, date);
 		const data = {
 			userInfo: {
 				...userInfo,

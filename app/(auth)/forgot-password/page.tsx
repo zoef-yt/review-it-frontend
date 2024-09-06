@@ -1,9 +1,11 @@
 'use client';
 
+import { useForm, SubmitHandler } from 'react-hook-form';
+
 import { forgotPasswordHandler } from '@/actions/form/forgotPasswordHandler';
+import { getClientInfo } from '@/actions/getClientInfo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useForm, SubmitHandler } from 'react-hook-form';
 
 interface ForgotPasswordFormInputs {
 	email: string;
@@ -18,7 +20,9 @@ export default function ForgotPassword() {
 	} = useForm<ForgotPasswordFormInputs>();
 
 	const onSubmit: SubmitHandler<ForgotPasswordFormInputs> = async (data: ForgotPasswordFormInputs) => {
-		const result = await forgotPasswordHandler({ email: data.email, navigator: window.navigator.userAgent, date: new Date() });
+		const navigator = window.navigator.userAgent;
+		const userInfo = await getClientInfo(navigator, new Date());
+		const result = await forgotPasswordHandler({ email: data.email, userInfo });
 		if (!result.success) {
 			setError('email', {
 				type: 'manual',

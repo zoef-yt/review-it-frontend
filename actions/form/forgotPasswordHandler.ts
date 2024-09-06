@@ -1,16 +1,15 @@
 'use server';
 
 import axios, { AxiosError } from 'axios';
-import { getClientInfo } from '../getClientInfo';
+
+import { ClientInfo } from '@/commonTypes';
 
 interface ForgotPasswordInput {
 	email: string;
-	navigator: string;
-	date: Date;
+	userInfo: ClientInfo;
 }
 export const forgotPasswordHandler = async (data: ForgotPasswordInput): Promise<any> => {
-	const { email, navigator, date } = data;
-	const userInfo = await getClientInfo(navigator, date);
+	const { email, userInfo } = data;
 	try {
 		const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BACKEND}auth/request-password-reset`, {
 			email,

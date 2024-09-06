@@ -1,12 +1,10 @@
 import { HomeScreenGamesList } from '@/components/home/gamesList';
-import { TestComponent } from '@/components/tests';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
 	return (
 		<main className='flex flex-col items-center py-4 px-4'>
-			<TestComponent />
 			<div className='space-y-12'>
 				<HomeScreenGamesList dateRange={[0, 7]} titleText='Next Week Releases' skipFilter={true} shouldLazyLoad={false} />
 				<HomeScreenGamesList dateRange={[0, 0]} titleText='Today' shouldLazyLoad={false} />

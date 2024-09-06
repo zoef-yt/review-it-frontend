@@ -2,7 +2,13 @@
 
 import axios from 'axios';
 
-function formatDateTime(date: Date) {
+type ClientInfo = {
+	device: string;
+	ipAddress: string;
+	time: string;
+};
+
+function formatDateTime(date: Date): string {
 	const time = date
 		.toLocaleTimeString('en-US', {
 			hour: 'numeric',
@@ -17,7 +23,7 @@ function formatDateTime(date: Date) {
 	return `${time}, ${day}${suffix} ${month} ${year}`;
 }
 
-export async function getClientInfo(userAgent: string, date: Date) {
+export async function getClientInfo(userAgent: string, date: Date): Promise<ClientInfo> {
 	let device;
 	if (userAgent.match(/Android/i)) {
 		device = 'Android';
@@ -38,14 +44,14 @@ export async function getClientInfo(userAgent: string, date: Date) {
 		return {
 			device,
 			ipAddress: ipResponse.data.ip,
-			loginTime: formatDateTime(date),
+			time: formatDateTime(date),
 		};
 	} catch (error) {
 		console.error('Error fetching IP address:', error);
 		return {
 			device,
 			ipAddress: 'Unable to fetch IP',
-			loginTime: formatDateTime(date),
+			time: formatDateTime(date),
 		};
 	}
 }

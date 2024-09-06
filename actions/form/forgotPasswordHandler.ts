@@ -14,10 +14,7 @@ export const forgotPasswordHandler = async (data: ForgotPasswordInput): Promise<
 	try {
 		const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BACKEND}auth/request-password-reset`, {
 			email,
-			userInfo: {
-				...userInfo,
-				time: userInfo.loginTime,
-			},
+			userInfo,
 		});
 		return { success: true, message: response.data.message };
 	} catch (error) {

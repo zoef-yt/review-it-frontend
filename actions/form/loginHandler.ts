@@ -22,7 +22,10 @@ export const loginFormHandler = async (props: LoginFormHandler): Promise<LoginFo
 	try {
 		const userInfo = await getClientInfo(navigator, date);
 		const data = {
-			userInfo,
+			userInfo: {
+				...userInfo,
+				loginTime: userInfo.time,
+			},
 			password: password,
 			username: usernameOrEmail.includes('@') ? undefined : usernameOrEmail,
 			email: usernameOrEmail.includes('@') ? usernameOrEmail : undefined,

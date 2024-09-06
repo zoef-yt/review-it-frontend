@@ -20,10 +20,7 @@ export const changePassworHandler = async (data: ChangePasswordFormInputs): Prom
 			{
 				currentPassword,
 				newPassword,
-				userInfo: {
-					...userInfo,
-					time: userInfo.loginTime,
-				},
+				userInfo,
 			},
 			{
 				headers: {

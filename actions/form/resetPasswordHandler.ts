@@ -20,10 +20,7 @@ export async function resetPasswordHandler(data: ResetPasswordInput): Promise<an
 			newPassword,
 			email,
 			token,
-			userInfo: {
-				...userInfo,
-				time: userInfo.loginTime,
-			},
+			userInfo,
 		});
 		return { success: true, message: response.data.message };
 	} catch (error) {

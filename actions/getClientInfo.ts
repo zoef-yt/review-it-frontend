@@ -1,4 +1,6 @@
-'use server';
+'use client';
+
+import axios from 'axios';
 
 function formatDateTime(date: Date) {
 	const time = date
@@ -30,11 +32,20 @@ export async function getClientInfo(userAgent: string, date: Date) {
 	} else {
 		device = 'Unknown Device';
 	}
-	const ipResponse = await fetch('https://api64.ipify.org?format=json');
-	const ipData = await ipResponse.json();
-	return {
-		device,
-		ipAddress: ipData.ip,
-		loginTime: formatDateTime(date),
-	};
+
+	try {
+		const ipResponse = await axios.get('https://ipinfo.io/json');
+		return {
+			device,
+			ipAddress: ipResponse.data.ip,
+			loginTime: formatDateTime(date),
+		};
+	} catch (error) {
+		console.error('Error fetching IP address:', error);
+		return {
+			device,
+			ipAddress: 'Unable to fetch IP',
+			loginTime: formatDateTime(date),
+		};
+	}
 }

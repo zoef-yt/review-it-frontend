@@ -22,7 +22,7 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<Providers>
-				<body className={`${inter.className} bg-gray-100 flex flex-col min-h-screen `}>
+				<body className={`${inter.className} bg-gray-100 flex flex-col min-h-screen`}>
 					<NavigationBarHome />
 					<div className='flex max-w-screen-xl mx-auto [&_main]:flex-grow flex-grow w-full'>{children}</div>
 					<Toaster />

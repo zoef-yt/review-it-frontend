@@ -1,40 +1,61 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { Star, Clock, Calendar } from 'lucide-react';
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface GameTileProps {
 	game: Game;
 	shouldLazyLoad: boolean;
 }
 
-export function GameTile(props: GameTileProps) {
-	const { game, shouldLazyLoad } = props;
+export function GameTile({ game, shouldLazyLoad }: GameTileProps) {
 	return (
-		<Link href={`/game/${game.slug}`} key={game.id} className='hover:no-underline'>
-			<Card className='overflow-hidden transition-shadow hover:shadow-2xl'>
+		<Link href={`/game/${game.slug}`} key={game.id} className='hover:no-underline group'>
+			<Card className='overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 bg-card'>
 				<CardHeader className='p-0'>
-					<div className='relative h-48 w-full'>
+					<div className='relative h-56 w-full overflow-hidden'>
 						{game.backgroundImage ? (
 							<Image
 								src={game.backgroundImage}
 								alt={game.name}
-								className='object-cover w-full h-full'
-								height={300}
-								width={300}
+								className={`object-cover w-full h-full transition-opacity duration-700`}
+								height={400}
+								width={400}
 								loading={shouldLazyLoad ? 'lazy' : 'eager'}
 								priority={!shouldLazyLoad}
 							/>
 						) : (
-							<div className='h-full w-full flex items-center justify-center bg-gray-200'>No Image</div>
+							<div className='h-full w-full flex items-center justify-center bg-accent text-accent-foreground'>No Image Available</div>
 						)}
 					</div>
 				</CardHeader>
-				<CardContent className='p-4'>
-					<CardTitle className='text-lg font-medium'>{game.name}</CardTitle>
-					<CardDescription className='mt-2 text-sm text-muted-foreground'>Released: {game.released}</CardDescription>
-					<CardDescription className='text-sm text-muted-foreground'>Rating: {game.rating}</CardDescription>
-					<CardDescription className='text-sm text-muted-foreground'>Playtime: {game.playtime} hrs</CardDescription>
+				<CardContent className='p-4 relative z-10'>
+					<CardTitle className='text-lg font-bold line-clamp-1 group-hover:text-primary transition-colors duration-300' title={game.name}>
+						{game.name}
+					</CardTitle>
+					<div className='mt-2 space-y-1'>
+						<CardDescription className='flex items-center text-sm'>
+							<Calendar className='w-4 h-4 mr-2' />
+							Released: {game.released}
+						</CardDescription>
+						<CardDescription className='flex items-center text-sm'>
+							<Star className='w-4 h-4 mr-2' />
+							Rating: {game.rating}
+						</CardDescription>
+						<CardDescription className='flex items-center text-sm'>
+							<Clock className='w-4 h-4 mr-2' />
+							Playtime: {game.playtime} hrs
+						</CardDescription>
+					</div>
+					<div className='mt-3'>
+						<Badge variant='secondary' className='mr-1'>
+							{game.genres[0].name}
+							{/* {JSON.stringify(game.genres)} */}
+						</Badge>
+						{game.genres[1] && <Badge variant='outline'>+{game.genres.length - 1}</Badge>}
+					</div>
 				</CardContent>
 			</Card>
 		</Link>

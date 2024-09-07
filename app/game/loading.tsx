@@ -25,6 +25,23 @@ export default function Loading() {
 					<Skeleton className='h-8 w-16' />
 				</div>
 			</div>
+			<div className='mx-auto px-4 py-6 relative bg-white shadow-lg rounded-lg'>
+				<div className='mb-6 flex flex-col items-center'>
+					<Skeleton className='h-6 w-32 mb-2' />
+					<div className='flex space-x-1'>
+						{[...Array(5)].map((_, i) => (
+							<Skeleton key={i} className='h-8 w-8 rounded-full' />
+						))}
+					</div>
+				</div>
+				<div className='mb-6'>
+					<Skeleton className='h-6 w-24 mb-2' />
+					<Skeleton className='h-32 w-full rounded-md' />
+				</div>
+				<div className='flex justify-center'>
+					<Skeleton className='h-10 w-32 rounded-lg' />
+				</div>
+			</div>
 		</main>
 	);
 }

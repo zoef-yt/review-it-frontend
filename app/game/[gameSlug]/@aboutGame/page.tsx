@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { SingleGameToast } from '@/components/singleGame/toast';
 import { DescriptionDrawer } from '@/components/singleGame/description';
 import { CustomRatingCard } from '@/components/singleGame/ratingCard';
+import { ReviewComponent } from '@/components/singleGame/reviewComponent';
 
 interface SingleGamePageProps {
 	params: {
@@ -25,7 +26,7 @@ export default async function SingleGamePage({ params }: SingleGamePageProps) {
 	const { backgroundImage, genres, name, platforms, rating, released, playtime, description } = game;
 
 	return (
-		<div className='mx-auto px-4'>
+		<div className='mx-auto px-4 w-full'>
 			<header className='relative w-full h-64 md:h-80 mb-6 overflow-hidden'>
 				<Image
 					src={backgroundImage}
@@ -58,7 +59,7 @@ export default async function SingleGamePage({ params }: SingleGamePageProps) {
 					</div>
 				</div>
 			</header>
-			<section className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-8'>
+			<section className='grid grid-cols-2 md:grid-cols-4 gap-6 mb-8'>
 				<Card className='p-4 text-center hover:shadow-2xl transition-all'>
 					<h2 className='text-2xl font-semibold mb-2'>Release Date</h2>
 					{released ? (
@@ -82,6 +83,19 @@ export default async function SingleGamePage({ params }: SingleGamePageProps) {
 				</Card>
 				<CustomRatingCard rating={rating} />
 			</section>
+			<ReviewComponent
+				game={{
+					gameID: game.id,
+					gameName: game.name,
+					gameImage: game.backgroundImage,
+					gameSlug: game.slug,
+					description: game.description,
+					genre: game.genres.map((genre) => ({
+						id: genre.id,
+						name: genre.name,
+					})),
+				}}
+			/>
 		</div>
 	);
 }

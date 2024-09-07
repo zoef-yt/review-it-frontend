@@ -20,7 +20,7 @@ interface ChangePasswordFormInputs {
 }
 
 export default function ChangePassword() {
-	const { user, loading, recheckSession } = useAuth();
+	const { user, recheckSession } = useAuth();
 	const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 	const router = useRouter();
 	const {
@@ -31,14 +31,6 @@ export default function ChangePassword() {
 	} = useForm<ChangePasswordFormInputs>({
 		resolver: zodResolver(ChangePasswordSchema),
 	});
-
-	if (loading) {
-		return (
-			<main>
-				<LoadingIndicator size={100} />
-			</main>
-		);
-	}
 
 	if (!user) {
 		router.push('/login');

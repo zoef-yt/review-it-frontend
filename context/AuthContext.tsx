@@ -9,7 +9,7 @@ interface AuthContextType {
 	isAuthorized: boolean;
 	loading: boolean;
 	recheckSession: () => Promise<void>;
-	user: { username: string; email: string } | null;
+	user: { email: string; userID?: string } | null;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -17,7 +17,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(true);
-	const [user, setUser] = useState<null | { username: string; email: string }>(null);
+	const [user, setUser] = useState<AuthContextType['user']>(null);
 	const checkSession = async () => {
 		setLoading(true);
 		setIsAuthorized(false);
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			setIsAuthorized(!!session);
 			if (session) {
 				const decodedToken = jwt.decode(session) as jwt.JwtPayload;
-				setUser({ username: decodedToken.username, email: decodedToken.email });
+				setUser({ email: decodedToken.email, userID: decodedToken.sub });
 			}
 			if (!session) {
 				setUser(null);

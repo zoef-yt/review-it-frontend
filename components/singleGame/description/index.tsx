@@ -19,11 +19,10 @@ interface DescriptionDrawerProps {
 }
 
 export function DescriptionDrawer({ description }: DescriptionDrawerProps) {
-	const truncatedDescription = description ? description : 'No description available.';
 	return (
 		<Drawer>
 			<DrawerTrigger asChild>
-				<p className='text-gray-500 line-clamp-4 cursor-pointer text-sm'>{truncatedDescription}</p>
+				<p className='text-gray-500 line-clamp-4 cursor-pointer text-sm'>{description ? description : 'No description available.'}</p>
 			</DrawerTrigger>
 			<DrawerContent>
 				<div className='mx-auto w-full p-6'>

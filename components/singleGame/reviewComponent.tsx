@@ -5,14 +5,14 @@ import Rating from '@mui/material/Rating';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios, { AxiosError } from 'axios';
+import Link from 'next/link';
 
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
-import Link from 'next/link';
 import { getSession } from '@/libs';
-import { Form, FormField } from '../ui/form';
+import { Form, FormField, FormMessage } from '../ui/form';
 
 interface ReviewComponentProps {
 	game: {
@@ -39,8 +39,7 @@ const formSchema = z.object({
 	comment: z.string(),
 });
 
-export function ReviewComponent(prop: ReviewComponentProps) {
-	const { game } = prop;
+export function ReviewComponent({ game }: ReviewComponentProps) {
 	const { user } = useAuth();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -49,6 +48,7 @@ export function ReviewComponent(prop: ReviewComponentProps) {
 			comment: '',
 		},
 	});
+	const { isSubmitting } = form.formState;
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const token = await getSession('accessToken');
@@ -62,6 +62,7 @@ export function ReviewComponent(prop: ReviewComponentProps) {
 		};
 		console.log(postData);
 		try {
+			form.clearErrors();
 			const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BACKEND}games-review/create`, postData, {
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -69,9 +70,19 @@ export function ReviewComponent(prop: ReviewComponentProps) {
 					Accept: 'application/json',
 				},
 			});
-			console.log(response);
+			if (response.status === 201) form.reset();
 		} catch (error) {
-			console.log(error);
+			if (error instanceof AxiosError && error.response) {
+				form.setError('comment', {
+					type: 'manual',
+					message: error.response.data.message,
+				});
+			} else {
+				form.setError('comment', {
+					type: 'manual',
+					message: 'An error occurred while submitting your review. Please try again.',
+				});
+			}
 		}
 	}
 
@@ -101,6 +112,7 @@ export function ReviewComponent(prop: ReviewComponentProps) {
 										value={field.value}
 										onChange={(event, newValue) => {
 											field.onChange(newValue);
+											form.clearErrors();
 										}}
 										precision={0.5}
 										size='large'
@@ -125,15 +137,17 @@ export function ReviewComponent(prop: ReviewComponentProps) {
 									rows={4}
 									tabIndex={user === null ? -1 : 0}
 								/>
+								<FormMessage />
 							</div>
 						)}
 					/>
 					<div className='flex justify-center'>
 						<Button
 							type='submit'
+							disabled={isSubmitting}
 							className='px-6 py-2 text-white rounded-lg font-semibold transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed'
 						>
-							Submit Review
+							{isSubmitting ? 'Submitting...' : 'Submit Review'}
 						</Button>
 					</div>
 				</form>

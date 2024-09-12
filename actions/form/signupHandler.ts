@@ -1,26 +1,43 @@
 'use server';
 
-import { addCookie } from '@/libs';
-import axios from 'axios';
 import jwt from 'jsonwebtoken';
+
+import { addCookie } from '@/libs';
+import { makeRequest } from '../makeRequest';
 
 interface SignupInput {
 	username: string;
 	email: string;
 	password: string;
 }
+interface SignupApiResponse {
+	accessToken: string;
+	email: string;
+	id: string;
+	username: string;
+}
 
-export const signupFormHandler = async (data: SignupInput): Promise<any> => {
-	const { username, email, password } = data;
-	try {
-		const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BACKEND}auth/signup`, {
-			username,
-			email,
-			password,
-		});
-		if (response.data?.accessToken) {
+type SignupResponse =
+	| {
+			success: true;
+	  }
+	| {
+			success: false;
+			error: string;
+	  };
+
+export const signupFormHandler = async (data: SignupInput): Promise<SignupResponse> => {
+	const response = await makeRequest<SignupApiResponse, SignupInput>({
+		method: 'post',
+		endpoint: 'auth/signup',
+		auth: 'none',
+		data,
+	});
+	if (response.success) {
+		if (response.data.accessToken) {
 			const decodedToken = jwt.decode(response.data.accessToken) as jwt.JwtPayload;
-			if (decodedToken && decodedToken.exp) {
+
+			if (decodedToken?.exp) {
 				const expiryDate = new Date(decodedToken.exp * 1000);
 				addCookie('accessToken', response.data.accessToken, {
 					httpOnly: true,
@@ -28,14 +45,16 @@ export const signupFormHandler = async (data: SignupInput): Promise<any> => {
 					secure: true,
 					expires: expiryDate,
 				});
+
+				return { success: true };
+			} else {
+				console.warn('Access token does not have an expiration date.');
+				return { success: false, error: 'Failed to retrieve access token' };
 			}
-		}
-		return { success: true, data: response.data };
-	} catch (error) {
-		if (axios.isAxiosError(error) && error.response) {
-			return { error: error.response.data.message, success: false };
 		} else {
-			return { error: 'An unknown error occurred', success: false };
+			return { success: false, error: 'Failed to retrieve access token' };
 		}
+	} else {
+		return { success: false, error: response.error };
 	}
 };

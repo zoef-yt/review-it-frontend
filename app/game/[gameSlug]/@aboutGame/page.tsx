@@ -1,4 +1,3 @@
-import axios from 'axios';
 import Image from 'next/image';
 
 import { Card } from '@/components/ui/card';
@@ -6,6 +5,7 @@ import { SingleGameToast } from '@/components/singleGame/toast';
 import { DescriptionDrawer } from '@/components/singleGame/description';
 import { CustomRatingCard } from '@/components/singleGame/ratingCard';
 import { ReviewComponent } from '@/components/singleGame/reviewComponent';
+import { makeRequest } from '@/actions/makeRequest';
 
 interface SingleGamePageProps {
 	params: {
@@ -14,15 +14,15 @@ interface SingleGamePageProps {
 }
 
 export default async function SingleGamePage({ params }: SingleGamePageProps) {
-	let game: Game | null = null;
-	try {
-		const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BACKEND}api/games/${params.gameSlug}`);
-		if (response.status === 200) game = response.data;
-		if (!game) return <SingleGameToast />;
-	} catch (error) {
+	const response = await makeRequest<Game>({
+		method: 'get',
+		endpoint: `api/games/${params.gameSlug}`,
+		auth: 'none',
+	});
+	if (response.success == false) {
 		return <SingleGameToast />;
 	}
-
+	const game = response.data;
 	const { backgroundImage, genres, name, platforms, rating, released, playtime, description } = game;
 
 	return (

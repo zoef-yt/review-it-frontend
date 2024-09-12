@@ -1,43 +1,50 @@
 'use server';
 
-import axios, { AxiosError } from 'axios';
-
 import { getSession, removeCookie } from '@/libs';
 import { ClientInfo } from '@/commonTypes';
+import { makeRequest } from '../makeRequest';
 
 interface ChangePasswordFormInputs {
 	currentPassword: string;
 	newPassword: string;
 	userInfo: ClientInfo;
 }
-export const changePassworHandler = async (data: ChangePasswordFormInputs): Promise<any> => {
+
+interface ChangePasswordApiResponse {
+	message: string;
+}
+
+type ChangePasswordResponse =
+	| {
+			success: true;
+			message: string;
+	  }
+	| {
+			success: false;
+			error: string;
+	  };
+
+export const changePassworHandler = async (data: ChangePasswordFormInputs): Promise<ChangePasswordResponse> => {
 	const { currentPassword, newPassword, userInfo } = data;
-	const token = await getSession('accessToken');
-	try {
-		const response = await axios.post(
-			`${process.env.NEXT_PUBLIC_API_BACKEND}auth/change-password`,
-			{
-				currentPassword,
-				newPassword,
-				userInfo,
-			},
-			{
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			},
-		);
+	const response = await makeRequest<ChangePasswordApiResponse, ChangePasswordFormInputs>({
+		method: 'post',
+		endpoint: 'auth/change-password',
+		auth: 'bearer',
+		data: {
+			currentPassword,
+			newPassword,
+			userInfo,
+		},
+	});
+
+	if (response.success) {
 		await removeCookie('accessToken');
 		const accessToken = await getSession('accessToken');
 		if (accessToken) {
 			return { error: 'Failed to log out', success: false };
 		}
 		return { success: true, message: response.data.message };
-	} catch (error) {
-		if (error instanceof AxiosError && error.response) {
-			return { error: error.response.data.message, success: false };
-		} else {
-			return { error: 'An unknown error occurred', success: false };
-		}
+	} else {
+		return { error: response.error, success: false };
 	}
 };

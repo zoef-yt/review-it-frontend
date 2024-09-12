@@ -79,11 +79,11 @@ export default function SignupForm() {
 	}
 
 	const handleUsernameSubmit: SubmitHandler<UsernameForm> = async (data: { username: string }) => {
-		const result = await validateUsername(data.username);
+		const result = await validateUsername({ username: data.username });
 		if (result.valid) {
 			setIsUsernameValid(true);
 			clearErrors('username');
-		} else if (!result.valid) {
+		} else {
 			setIsUsernameValid(false);
 			setError('username', { type: 'manual', message: result.error });
 		}
@@ -91,7 +91,7 @@ export default function SignupForm() {
 
 	const handleSignupSubmit: SubmitHandler<SignupFormFields> = async (data) => {
 		const result = await signupFormHandler(data);
-		if (result.success) {
+		if (result.success == true) {
 			await recheckSession();
 			router.push('/');
 		} else {

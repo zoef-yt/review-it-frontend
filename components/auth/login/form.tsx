@@ -36,7 +36,7 @@ export function LoginForm() {
 		const navigator = window.navigator.userAgent;
 		const userInfo = await getClientInfo(navigator, new Date());
 		const result = await loginFormHandler({ ...data, userInfo });
-		if (!result.success) {
+		if (result.success == false) {
 			setError('usernameOrEmail', {
 				type: 'manual',
 				message: result.error,

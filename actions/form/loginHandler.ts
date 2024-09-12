@@ -1,43 +1,51 @@
 'use server';
 
-import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
 import { addCookie } from '@/libs';
 import { ClientInfo } from '@/commonTypes';
+import { makeRequest } from '../makeRequest';
 
-export interface LoginFormHandlerResult {
-	success: boolean;
-	error?: string;
-}
-
+type LoginFormResponse =
+	| {
+			success: true;
+	  }
+	| {
+			success: false;
+			error: string;
+	  };
 interface LoginFormHandler {
 	usernameOrEmail: string;
 	password: string;
 	userInfo: ClientInfo;
 }
-export const loginFormHandler = async (props: LoginFormHandler): Promise<LoginFormHandlerResult> => {
+
+interface LoginApiResponse {
+	accessToken: string;
+}
+
+export const loginFormHandler = async (props: LoginFormHandler): Promise<LoginFormResponse> => {
 	const { usernameOrEmail, password, userInfo } = props;
-	try {
-		const data = {
-			userInfo: {
-				...userInfo,
-				loginTime: userInfo.time,
-			},
-			password: password,
-			username: usernameOrEmail.includes('@') ? undefined : usernameOrEmail,
-			email: usernameOrEmail.includes('@') ? usernameOrEmail : undefined,
-		};
-		const response = await axios.post(
-			`${process.env.NEXT_PUBLIC_API_BACKEND}auth/login`,
-			{ ...data },
-			{
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			},
-		);
-		if (response.data?.accessToken) {
+	const data = {
+		userInfo: {
+			...userInfo,
+			loginTime: userInfo.time,
+		},
+		password: password,
+		username: usernameOrEmail.includes('@') ? undefined : usernameOrEmail,
+		email: usernameOrEmail.includes('@') ? usernameOrEmail : undefined,
+	};
+	const response = await makeRequest<LoginApiResponse, typeof data>({
+		method: 'post',
+		endpoint: 'auth/login',
+		auth: 'none',
+		data,
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	});
+	if (response.success) {
+		if (response.data.accessToken) {
 			const decodedToken = jwt.decode(response.data.accessToken) as jwt.JwtPayload;
 
 			if (decodedToken?.exp) {
@@ -53,17 +61,10 @@ export const loginFormHandler = async (props: LoginFormHandler): Promise<LoginFo
 			}
 
 			return { success: true };
+		} else {
+			return { success: false, error: 'Failed to retrieve access token' };
 		}
-
-		return {
-			success: false,
-			error: 'Failed to retrieve access token',
-		};
-	} catch (error) {
-		// console.error('Login failed:', error);
-		return {
-			success: false,
-			error: axios.isAxiosError(error) ? error.response?.data?.message || 'An unexpected error occurred' : 'An unexpected error occurred',
-		};
+	} else {
+		return { success: false, error: response.error };
 	}
 };

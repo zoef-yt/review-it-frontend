@@ -1,8 +1,7 @@
 'use server';
 
-import axios from 'axios';
-
 import { ClientInfo } from '@/commonTypes';
+import { makeRequest } from '../makeRequest';
 
 interface ResetPasswordInput {
 	newPassword: string;
@@ -11,21 +10,36 @@ interface ResetPasswordInput {
 	userInfo: ClientInfo;
 }
 
-export async function resetPasswordHandler(data: ResetPasswordInput): Promise<any> {
+interface ResetPasswordApiResponse {
+	message: string;
+}
+
+type ResetPasswordResponse =
+	| {
+			success: true;
+			message: string;
+	  }
+	| {
+			success: false;
+			error: string;
+	  };
+
+export async function resetPasswordHandler(data: ResetPasswordInput): Promise<ResetPasswordResponse> {
 	const { newPassword, email, token, userInfo } = data;
-	try {
-		const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BACKEND}auth/reset-password`, {
+	const response = await makeRequest<ResetPasswordApiResponse, ResetPasswordInput>({
+		method: 'post',
+		endpoint: 'auth/reset-password',
+		auth: 'none',
+		data: {
 			newPassword,
 			email,
 			token,
 			userInfo,
-		});
+		},
+	});
+	if (response.success) {
 		return { success: true, message: response.data.message };
-	} catch (error) {
-		if (axios.isAxiosError(error) && error.response) {
-			return { error: error.response.data.message, success: false };
-		} else {
-			return { error: 'An unknown error occurred', success: false };
-		}
+	} else {
+		return { success: false, error: response.error };
 	}
 }

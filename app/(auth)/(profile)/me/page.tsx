@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import axios from 'axios';
-import { getSession } from '@/libs';
+
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar, Star, User, Mail, Gamepad2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { makeRequest } from '@/actions/makeRequest';
 
 interface Game {
 	_id: string;
@@ -37,20 +37,12 @@ interface UserProfileProps {
 }
 
 export default async function UserProfile() {
-	const token = await getSession('accessToken');
-	const url = `${process.env.NEXT_PUBLIC_API_BACKEND}auth/me`;
-	let user: UserProfileProps | null = null;
-
-	try {
-		const data = await axios.get(url, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
-		user = data.data;
-	} catch (error) {}
-
-	if (!user) {
+	const response = await makeRequest<UserProfileProps>({
+		method: 'get',
+		endpoint: 'auth/me',
+		auth: 'bearer',
+	});
+	if (response.success == false) {
 		return (
 			<main className='flex justify-center items-center h-screen'>
 				<div className='text-center'>
@@ -62,7 +54,7 @@ export default async function UserProfile() {
 			</main>
 		);
 	}
-
+	const user = response.data;
 	return (
 		<main className='p-6 space-y-12'>
 			<div className='flex justify-between items-center mb-6'>

@@ -44,7 +44,7 @@ function ResetPasswordComponent() {
 			const navigator = window.navigator.userAgent;
 			const userInfo = await getClientInfo(navigator, new Date());
 			const result = await resetPasswordHandler({ ...data, email, token, userInfo });
-			if (!result.success) {
+			if (result.success === false) {
 				setError('newPassword', {
 					type: 'manual',
 					message: result.error,

@@ -10,7 +10,7 @@ type BaseRequestType<M extends HttpMethod> = {
 	method: M;
 	endpoint: string;
 	auth: AuthType;
-	params?: Record<string, string | number | boolean>;
+	params?: Record<string, string | number | boolean | null>;
 	headers?: Record<string, string>;
 	timeout?: number;
 };

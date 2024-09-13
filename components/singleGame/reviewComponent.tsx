@@ -5,7 +5,6 @@ import Rating from '@mui/material/Rating';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios, { AxiosError } from 'axios';
 import Link from 'next/link';
 
 import { Textarea } from '@/components/ui/textarea';
@@ -13,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { getSession } from '@/libs';
 import { Form, FormField, FormMessage } from '../ui/form';
+import { makeRequest } from '@/actions/makeRequest';
 
 interface ReviewComponentProps {
 	game: {
@@ -53,36 +53,31 @@ export function ReviewComponent({ game }: ReviewComponentProps) {
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		const token = await getSession('accessToken');
 		if (!token || !user?.userID) return;
-		const postData: ReviewFormValues = {
+		const postData = {
 			rating: values.rating,
 			comment: values.comment,
 			gameSlug: game.gameSlug,
 			userID: user?.userID,
 			game,
 		};
-		console.log(postData);
-		try {
-			form.clearErrors();
-			const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BACKEND}games-review/create`, postData, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-					'Content-Type': 'application/json',
-					Accept: 'application/json',
-				},
+		form.clearErrors();
+		const response = await makeRequest<{ message: string }, ReviewFormValues>({
+			method: 'post',
+			endpoint: 'games-review/create',
+			auth: 'bearer',
+			data: postData,
+			headers: {
+				Accept: 'application/json',
+			},
+		});
+
+		if (response.success) {
+			form.reset();
+		} else {
+			form.setError('comment', {
+				type: 'manual',
+				message: response.error || 'An error occurred while submitting your review. Please try again.',
 			});
-			if (response.status === 201) form.reset();
-		} catch (error) {
-			if (error instanceof AxiosError && error.response) {
-				form.setError('comment', {
-					type: 'manual',
-					message: error.response.data.message,
-				});
-			} else {
-				form.setError('comment', {
-					type: 'manual',
-					message: 'An error occurred while submitting your review. Please try again.',
-				});
-			}
 		}
 	}
 

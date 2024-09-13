@@ -6,6 +6,7 @@ import { DescriptionDrawer } from '@/components/singleGame/description';
 import { CustomRatingCard } from '@/components/singleGame/ratingCard';
 import { ReviewComponent } from '@/components/singleGame/reviewComponent';
 import { makeRequest } from '@/actions/makeRequest';
+import { Game } from '@/types/game';
 
 interface SingleGamePageProps {
 	params: {

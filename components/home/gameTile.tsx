@@ -32,7 +32,7 @@ export function GameTile({ game, shouldLazyLoad }: GameTileProps) {
 						)}
 					</div>
 				</CardHeader>
-				<CardContent className='p-4 relative z-10'>
+				<CardContent className='p-4 relative'>
 					<CardTitle className='text-lg font-bold line-clamp-1 group-hover:text-primary transition-colors duration-300' title={game.name}>
 						{game.name}
 					</CardTitle>

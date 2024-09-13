@@ -5,7 +5,7 @@ import { Game } from '@/types/game';
 interface HomeScreenGamesListProps {
 	dateRange: [number, number];
 	titleText: string;
-	skipFilter?: boolean;
+	skipFilter: boolean;
 	shouldLazyLoad?: boolean;
 }
 
@@ -18,10 +18,9 @@ export async function HomeScreenGamesList({ dateRange, titleText, skipFilter = f
 		page: 1,
 		ordering: '-released',
 		dateRange: getDateRange(dateRange[0], dateRange[1]),
-		skipFilter,
+		skipFilter: skipFilter,
 		search: null,
 	};
-
 	const response = await makeRequest<GamesApiResponse>({
 		method: 'get',
 		endpoint: 'api/games',
@@ -37,7 +36,7 @@ export async function HomeScreenGamesList({ dateRange, titleText, skipFilter = f
 
 	return (
 		<div>
-			<h2 className='text-2xl font-semibold mb-4 sticky top-0 py-2 z-10 bg-gray-100 line-clamp-1'>{titleText}</h2>
+			<h2 className='text-2xl font-semibold mb-4 sticky top-0 py-2 bg-gray-100 line-clamp-1 z-50'>{titleText}</h2>
 			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
 				{games.map((game) => (
 					<GameTile key={game.id} game={game} shouldLazyLoad={shouldLazyLoad} />

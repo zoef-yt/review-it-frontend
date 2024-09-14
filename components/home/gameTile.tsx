@@ -4,10 +4,10 @@ import { Star, Clock, Calendar } from 'lucide-react';
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Game } from '@/types/game';
+import type { GameList } from '@/types/gameList';
 
 interface GameTileProps {
-	game: Game;
+	game: GameList;
 	shouldLazyLoad: boolean;
 }
 
@@ -53,7 +53,6 @@ export function GameTile({ game, shouldLazyLoad }: GameTileProps) {
 					<div className='mt-3'>
 						<Badge variant='secondary' className='mr-1'>
 							{game.genres[0].name}
-							{/* {JSON.stringify(game.genres)} */}
 						</Badge>
 						{game.genres[1] && <Badge variant='outline'>+{game.genres.length - 1}</Badge>}
 					</div>

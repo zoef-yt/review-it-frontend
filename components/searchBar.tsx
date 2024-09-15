@@ -96,7 +96,7 @@ function SearchBarComponent() {
 	}, [form, debouncedSearch]);
 
 	const onSubmit = (data: z.infer<typeof searchSchema>) => {
-		router.push(`/game/search/${encodeURIComponent(data.search)}`);
+		router.push(`/game/search/?search=${encodeURIComponent(data.search.trim())}`);
 		setShowResults(false);
 	};
 
@@ -143,7 +143,7 @@ function SearchBarComponent() {
 				{showResults ? (
 					<div className='absolute left-0 right-0 mt-2 bg-white rounded-lg shadow-lg overflow-y-auto z-10 max-h-[30dvh]'>
 						{searchResults?.map((game) => (
-							<SingleSearchGame key={game.id} game={game} searchTerm={form.getValues().search} setShowResults={setShowResults} />
+							<SingleSearchGame key={game.id} game={game} searchTerm={form.getValues().search.trim()} setShowResults={setShowResults} />
 						))}
 					</div>
 				) : null}

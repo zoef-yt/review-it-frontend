@@ -36,8 +36,7 @@ export async function HomeScreenGamesList({ dateRange, titleText, skipFilter = f
 
 	return (
 		<div>
-			{/* <p className='text-sm text-gray-500 mb-4  -[50%]'>{JSON.stringify(response.data.results[0], null, 1)}</p> */}
-			<h2 className='text-2xl font-semibold mb-4 sticky top-0 py-2 bg-gray-100 line-clamp-1 z-50'>{titleText}</h2>
+			<h2 className='text-2xl font-semibold mb-4 py-2 bg-gray-100 line-clamp-1 z-50'>{titleText}</h2>
 			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
 				{games.map((game) => (
 					<GameTile key={game.id} game={game} shouldLazyLoad={shouldLazyLoad} />

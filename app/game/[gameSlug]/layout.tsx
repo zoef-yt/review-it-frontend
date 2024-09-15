@@ -6,7 +6,7 @@ interface LayoutProps {
 export default function Layout(props: LayoutProps) {
 	const { aboutGame, gameReviews } = props;
 	return (
-		<main className='flex flex-col mx-auto px-4 py-6'>
+		<main className='flex flex-col mx-auto px-4 py-6 w-full'>
 			{aboutGame}
 			{gameReviews}
 		</main>

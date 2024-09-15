@@ -27,7 +27,7 @@ export default async function SingleGamePage({ params }: SingleGamePageProps) {
 	const { backgroundImage, genres, name, platforms, rating, released, playtime, description } = game;
 
 	return (
-		<div className='mx-auto px-4 w-full'>
+		<div className='w-full'>
 			<header className='relative w-full h-64 md:h-80 mb-6 overflow-hidden'>
 				<Image
 					src={backgroundImage}

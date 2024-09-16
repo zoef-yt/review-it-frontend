@@ -9,7 +9,9 @@ interface SignupInput {
 	username: string;
 	email: string;
 	password: string;
+	confirmPassword: string;
 }
+
 interface SignupApiResponse {
 	accessToken: string;
 	email: string;
@@ -27,12 +29,14 @@ type SignupResponse =
 	  };
 
 export const signupFormHandler = async (data: SignupInput): Promise<SignupResponse> => {
-	const response = await makeRequest<SignupApiResponse, SignupInput>({
+	const { confirmPassword, ...rest } = data;
+	const response = await makeRequest<SignupApiResponse, Omit<SignupInput, 'confirmPassword'>>({
 		method: 'post',
 		endpoint: 'auth/signup',
 		auth: 'none',
-		data,
+		data: rest,
 	});
+
 	if (response.success) {
 		if (response.data.accessToken) {
 			const decodedToken = jwt.decode(response.data.accessToken) as jwt.JwtPayload;

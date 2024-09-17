@@ -4,8 +4,9 @@ import { Avatar } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import type { Review } from '@/types/gameReviews';
+import { DeleteReviewButton } from './deleteReviewButton';
 
-export function SingleReview({ review }: { review: Review }) {
+export function SingleReview({ review, gameSlug }: { review: Review; gameSlug: string }) {
 	const { rating, comment, userID, createdAt } = review;
 	const initials = userID.username.charAt(0).toUpperCase();
 	const randomColor = `hsl(${Math.random() * 360}, 70%, 80%)`;

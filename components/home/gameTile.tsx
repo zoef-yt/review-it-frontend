@@ -50,12 +50,14 @@ export function GameTile({ game, shouldLazyLoad }: GameTileProps) {
 							Playtime: {game.playtime} hrs
 						</CardDescription>
 					</div>
-					<div className='mt-3'>
-						<Badge variant='secondary' className='mr-1'>
-							{game.genres[0].name}
-						</Badge>
-						{game.genres[1] && <Badge variant='outline'>+{game.genres.length - 1}</Badge>}
-					</div>
+					{game.genres.length > 0 ? (
+						<div className='mt-3'>
+							<Badge variant='secondary' className='mr-1'>
+								{game.genres[0].name}
+							</Badge>
+							{game.genres[1] && <Badge variant='outline'>+{game.genres.length - 1}</Badge>}
+						</div>
+					) : null}
 				</CardContent>
 			</Card>
 		</Link>

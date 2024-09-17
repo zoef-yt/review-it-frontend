@@ -23,6 +23,7 @@ interface Review {
 	gameID: Game;
 	userID: string;
 	createdAt: string;
+	gameSlug: string;
 }
 
 interface UserProfileProps {
@@ -42,6 +43,7 @@ export default async function UserProfile() {
 		endpoint: 'auth/me',
 		auth: 'bearer',
 	});
+
 	if (response.success == false) {
 		return (
 			<main className='flex justify-center items-center h-screen'>
@@ -54,7 +56,9 @@ export default async function UserProfile() {
 			</main>
 		);
 	}
+
 	const user = response.data;
+
 	return (
 		<main className='p-6 space-y-12'>
 			<div className='flex justify-between items-center mb-6'>
@@ -83,14 +87,16 @@ export default async function UserProfile() {
 					<div className='space-y-6'>
 						{user.gamesReviews.map((review, index) => (
 							<Card key={index} className='w-full transition-transform hover:shadow-lg'>
-								<CardHeader className='flex flex-row items-center gap-4'>
-									<Avatar className='w-24 h-24'>
-										<AvatarImage src={review.gameID.gameImage} alt={review.gameID.gameName} className='object-cover' />
-										<AvatarFallback>{review.gameID.gameName.slice(0, 2)}</AvatarFallback>
-									</Avatar>
-									<div>
-										<CardTitle className='text-lg'>{review.gameID.gameName}</CardTitle>
-									</div>
+								<CardHeader>
+									<Link href={`/game/${review.gameID?.gameSlug}`} className='flex flex-row items-center gap-4'>
+										<Avatar className='w-24 h-24'>
+											<AvatarImage src={review.gameID.gameImage} alt={review.gameID.gameName} className='object-cover' />
+											<AvatarFallback>{review.gameID.gameName.slice(0, 2)}</AvatarFallback>
+										</Avatar>
+										<div>
+											<CardTitle className='text-lg'>{review.gameID.gameName}</CardTitle>
+										</div>
+									</Link>
 								</CardHeader>
 								<CardContent>
 									<div className='flex items-center space-x-2 mb-2'>

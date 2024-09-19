@@ -4,13 +4,12 @@ import { Avatar } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import type { Review } from '@/types/gameReviews';
-import { DeleteReviewButton } from './deleteReviewButton';
+// import { DeleteReviewButton } from './deleteReviewButton';
 
 export function SingleReview({ review, gameSlug }: { review: Review; gameSlug: string }) {
 	const { rating, comment, userID, createdAt } = review;
 	const initials = userID.username.charAt(0).toUpperCase();
 	const randomColor = `hsl(${Math.random() * 360}, 70%, 80%)`;
-
 	return (
 		<Card className='overflow-hidden'>
 			<CardContent className='p-0'>
@@ -29,6 +28,7 @@ export function SingleReview({ review, gameSlug }: { review: Review; gameSlug: s
 					<div className='flex items-center'>
 						<Rating value={rating} precision={0.5} readOnly size='small' />
 						<span className='ml-2 text-sm text-gray-600'>({rating.toFixed(1)})</span>
+						{/* <DeleteReviewButton review={review} gameSlug={gameSlug} /> */}
 					</div>
 				</div>
 				<Separator />

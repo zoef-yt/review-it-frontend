@@ -40,7 +40,6 @@ export const signupFormHandler = async (data: SignupInput): Promise<SignupRespon
 	if (response.success) {
 		if (response.data.accessToken) {
 			const decodedToken = jwt.decode(response.data.accessToken) as jwt.JwtPayload;
-
 			if (decodedToken?.exp) {
 				const expiryDate = new Date(decodedToken.exp * 1000);
 				addCookie('accessToken', response.data.accessToken, {
@@ -49,7 +48,6 @@ export const signupFormHandler = async (data: SignupInput): Promise<SignupRespon
 					secure: true,
 					expires: expiryDate,
 				});
-
 				return { success: true };
 			} else {
 				console.warn('Access token does not have an expiration date.');

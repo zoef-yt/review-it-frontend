@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Search } from 'lucide-react';
 import Image from 'next/image';
 
@@ -21,8 +21,11 @@ const searchSchema = z.object({
 	search: z.string().min(1, 'Please enter a search term'),
 });
 
+const authRoute = ['/change-password', '/me', '/login', '/signup', '/forgot-password', '/reset-password'];
+
 function SearchBarComponent() {
 	const searchParams = useSearchParams();
+	const pathname = usePathname();
 	const [isSticky, setIsSticky] = useState(false);
 	const [searchResults, setSearchResults] = useState<GameList[] | null>(null);
 	const [showResults, setShowResults] = useState(false);
@@ -99,6 +102,10 @@ function SearchBarComponent() {
 		router.push(`/game/search/?search=${encodeURIComponent(data.search.trim())}`);
 		setShowResults(false);
 	};
+
+	if (authRoute.includes(pathname)) {
+		return null;
+	}
 
 	return (
 		<div className={`w-full z-50 transition-all duration-300 ease-in-out px-4 mt-4 ${isSticky ? 'sticky top-4' : ''}`}>

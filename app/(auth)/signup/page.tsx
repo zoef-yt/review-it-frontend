@@ -1,72 +1,79 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
-import { useAuth } from '@/context/AuthContext';
-import { SignupSchema } from '@/components/auth/schema/signup';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { signupFormHandler } from '@/actions/form/signupHandler';
 import { validateUsername } from '@/actions/form/validateUsername';
+import { cn } from '@/lib/utils';
+import { signUpFormSchema, signUpUsernameSchema } from '@/schema/signup';
+import { useAuth } from '@/context/AuthContext';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
 
-interface UsernameForm {
-	username: string;
-}
-
-interface SignupFormFields extends UsernameForm {
-	email: string;
-	password: string;
-	confirmPassword: string;
-}
-
-export default function SignupForm() {
-	const { recheckSession, loading, isAuthorized } = useAuth();
+export default function SignupPage() {
+	const { toast } = useToast();
+	const { recheckSession, loading } = useAuth();
 	const router = useRouter();
-	const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
+	const [formParent] = useAutoAnimate();
 	const [isUsernameValid, setIsUsernameValid] = useState(false);
+	const [passwordVisible, setPasswordVisible] = useState(false);
 
-	const {
-		register,
-		handleSubmit,
-		setError,
-		clearErrors,
-		reset,
-		formState: { errors, isSubmitting },
-	} = useForm<SignupFormFields>({
-		resolver: zodResolver(SignupSchema),
+	const form = useForm<z.infer<typeof signUpFormSchema>>({
+		resolver: zodResolver(isUsernameValid ? signUpFormSchema : signUpUsernameSchema),
 	});
 
-	const checkSession = async () => {
-		try {
-			await recheckSession();
-		} catch (error) {
-			console.error('Error rechecking session:', error);
-		} finally {
+	const onUsernameSubmit = async (values: z.infer<typeof signUpUsernameSchema>) => {
+		const result = await validateUsername({ username: values.username });
+		if (result.valid) {
+			setIsUsernameValid(true);
+			toast({ description: 'Username is available', duration: 1000, className: 'bg-green-500 text-white' });
+		} else {
+			form.setError('username', { message: result.error });
+			toast({ description: result.error, duration: 2000, variant: 'destructive' });
 		}
 	};
 
-	useEffect(() => {
-		checkSession();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	useEffect(() => {
-		if (isAuthorized && !loading) {
+	const onFullFormSubmit = async (values: z.infer<typeof signUpFormSchema>) => {
+		const result = await signupFormHandler(values);
+		if (result.success) {
 			router.push('/');
+			await recheckSession();
+			toast({ description: 'Signup successful', duration: 3000, className: 'bg-green-500 text-white' });
+		} else {
+			if (result.error.includes('email')) {
+				form.setError('email', { message: result.error });
+			} else if (result.error.includes('username')) {
+				form.setError('username', { message: result.error });
+			} else {
+				form.setError('root', { message: result.error });
+				toast({ description: result.error, duration: 2000, variant: 'destructive' });
+			}
 		}
-	}, [isAuthorized, router, loading]);
+	};
 
-	if (loading || isAuthorized) {
+	const handleEditUsername = () => {
+		setIsUsernameValid(false);
+	};
+
+	if (loading) {
 		return (
 			<main className='flex flex-col items-center justify-center'>
 				<div className='bg-white p-10 rounded-lg shadow-lg w-full max-w-md'>
 					<Skeleton className='h-10 rounded mb-8' />
 					<div className='flex flex-col space-y-6'>
+						<div>
+							<Skeleton className='h-4 rounded w-1/3 mb-2' />
+							<Skeleton className='h-10 rounded w-full' />
+						</div>
 						<div>
 							<Skeleton className='h-4 rounded w-1/3 mb-2' />
 							<Skeleton className='h-10 rounded w-full' />
@@ -78,132 +85,109 @@ export default function SignupForm() {
 		);
 	}
 
-	const handleUsernameSubmit: SubmitHandler<UsernameForm> = async (data: { username: string }) => {
-		const result = await validateUsername({ username: data.username });
-		if (result.valid) {
-			setIsUsernameValid(true);
-			clearErrors('username');
-		} else {
-			setIsUsernameValid(false);
-			setError('username', { type: 'manual', message: result.error });
-		}
-	};
-
-	const handleSignupSubmit: SubmitHandler<SignupFormFields> = async (data) => {
-		const result = await signupFormHandler(data);
-		if (result.success == true) {
-			await recheckSession();
-			router.push('/');
-		} else {
-			if (result.error.includes('email')) {
-				setError('email', { type: 'manual', message: result.error });
-			} else if (result.error.includes('username')) {
-				setError('username', { type: 'manual', message: result.error });
-			} else {
-				console.error(result.error);
-			}
-		}
-	};
-
-	const handleEditUsername = () => {
-		setIsUsernameValid(false);
-		clearErrors();
-		reset({ username: '' });
-	};
-
 	return (
-		<main className='flex flex-col items-center justify-center'>
-			<div className='bg-white p-10 rounded-lg shadow-lg w-full max-w-md'>
-				<h1 className='text-4xl font-bold mb-8 text-center text-gray-800'>Sign Up</h1>
-				{!isUsernameValid ? (
-					<form onSubmit={handleSubmit(handleUsernameSubmit)} className='flex flex-col space-y-6'>
-						<div>
-							<label className='block text-sm font-medium text-gray-700' htmlFor='username'>
-								Username
-							</label>
-							<Input {...register('username')} id='username' placeholder='Enter your username' type='text' autoFocus />
-							{errors.username && <p className='text-red-500 text-sm'>{errors.username.message}</p>}
-						</div>
-						<Button
-							type='submit'
-							variant='default'
-							size='lg'
-							className={isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
-							disabled={isSubmitting}
-						>
-							{isSubmitting ? 'Validating...' : 'Check Username'}
-						</Button>
-						<Link href='/login' className='text-blue-600 hover:underline text-center mt-4'>
-							Already have an account? Login
-						</Link>
-					</form>
-				) : (
-					<form onSubmit={handleSubmit(handleSignupSubmit)} className='flex flex-col space-y-6'>
-						<div>
-							<div className='flex justify-between items-center '>
-								<label className='block text-sm font-medium text-gray-700' htmlFor='username'>
-									Username
-								</label>
-								<Button type='button' variant='link' size='sm' onClick={handleEditUsername}>
-									Edit
-								</Button>
-							</div>
-							<Input {...register('username')} id='username' readOnly disabled className='bg-gray-200 border-green-500' />
-						</div>
-						<div>
-							<label className='block text-sm font-medium text-gray-700' htmlFor='email'>
-								Email
-							</label>
-							<Input {...register('email')} id='email' placeholder='Enter your email' type='email' autoFocus />
-							{errors.email && <p className='text-red-500 text-sm'>{errors.email.message}</p>}
-						</div>
-						<div>
-							<label className='block text-sm font-medium text-gray-700' htmlFor='password'>
-								Password
-							</label>
-							<div className='w-full flex gap-2 items-center'>
-								<Input
-									{...register('password')}
-									id='password'
-									placeholder='Enter your password'
-									type={passwordVisible ? 'text' : 'password'}
+		<main className='flex flex-col items-center justify-center bg-gray-100'>
+			<div className='w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-lg'>
+				<h2 className='text-3xl font-bold text-center text-gray-900'>Sign Up</h2>
+				<Form {...form}>
+					<form ref={formParent} onSubmit={form.handleSubmit(isUsernameValid ? onFullFormSubmit : onUsernameSubmit)} className='space-y-6'>
+						{form.formState.errors.root && <div className='text-red-500 text-sm font-medium'>{form.formState.errors.root.message}</div>}
+						<FormField
+							control={form.control}
+							name='username'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Username</FormLabel>
+									<div className='flex items-center space-x-2'>
+										<FormControl>
+											<Input
+												placeholder='Enter your username'
+												{...field}
+												disabled={isUsernameValid}
+												className={cn(
+													'flex-1',
+													isUsernameValid && 'border-green-600 focus-visible:ring-green-600 bg-green-100',
+												)}
+												autoFocus
+											/>
+										</FormControl>
+										{isUsernameValid && (
+											<Button type='button' variant='outline' size='sm' onClick={handleEditUsername}>
+												Edit
+											</Button>
+										)}
+									</div>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						{isUsernameValid && (
+							<>
+								<FormField
+									control={form.control}
+									name='email'
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Email</FormLabel>
+											<FormControl>
+												<Input placeholder='Enter your email' {...field} autoFocus />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
 								/>
-								<Button
-									type='button'
-									variant='link'
-									size='sm'
-									onClick={() => setPasswordVisible(!passwordVisible)}
-									tabIndex={-1}
-									className='text-gray-600 hover:text-gray-800'
-								>
-									{passwordVisible ? 'Hide' : 'Show'}
-								</Button>
-							</div>
-							{errors.password && <p className='text-red-500 text-sm'>{errors.password.message}</p>}
-						</div>
-						<div>
-							<label className='block text-sm font-medium text-gray-700' htmlFor='confirmPassword'>
-								Confirm Password
-							</label>
-							<Input
-								{...register('confirmPassword')}
-								id='confirmPassword'
-								placeholder='Confirm your password'
-								type={passwordVisible ? 'text' : 'password'}
-							/>
-							{errors.confirmPassword && <p className='text-red-500 text-sm'>{errors.confirmPassword.message}</p>}
-						</div>
-						<Button
-							type='submit'
-							variant='default'
-							size='lg'
-							className={isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}
-							disabled={isSubmitting}
-						>
-							{isSubmitting ? 'Signing Up...' : 'Sign Up'}
+								<FormField
+									control={form.control}
+									name='password'
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Password</FormLabel>
+											<div className='flex items-center space-x-2'>
+												<FormControl>
+													<Input
+														type={passwordVisible ? 'text' : 'password'}
+														placeholder='Enter your password'
+														{...field}
+													/>
+												</FormControl>
+												<Button
+													type='button'
+													variant='outline'
+													size='sm'
+													onClick={() => setPasswordVisible(!passwordVisible)}
+												>
+													{passwordVisible ? 'Hide' : 'Show'}
+												</Button>
+											</div>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name='confirmPassword'
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Confirm Password</FormLabel>
+											<FormControl>
+												<Input type={passwordVisible ? 'text' : 'password'} placeholder='Confirm your password' {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</>
+						)}
+						<Button type='submit' className='w-full'>
+							{isUsernameValid ? 'Sign Up' : 'Check Username'}
 						</Button>
 					</form>
-				)}
+				</Form>
+				<div className='text-center'>
+					<Link href='/login' className='text-sm text-blue-600 hover:underline'>
+						Already have an account? Login
+					</Link>
+				</div>
 			</div>
 		</main>
 	);

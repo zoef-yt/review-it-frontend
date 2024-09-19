@@ -6,7 +6,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 
-import { ResetPasswordSchema } from '@/components/auth/schema/reset-password';
+import { ResetPasswordSchema } from '@/schema/reset-password';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';

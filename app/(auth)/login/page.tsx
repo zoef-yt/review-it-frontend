@@ -1,37 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-
 import { useAuth } from '@/context/AuthContext';
 import { LoginForm } from '@/components/auth/login/form';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function LoginPage() {
-	const { isAuthorized, loading, recheckSession } = useAuth();
-	const router = useRouter();
+	const { loading } = useAuth();
 
-	const checkSession = async () => {
-		try {
-			await recheckSession();
-		} catch (error) {
-			console.error('Error rechecking session:', error);
-		} finally {
-		}
-	};
-
-	useEffect(() => {
-		checkSession();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	useEffect(() => {
-		if (isAuthorized && !loading) {
-			router.push('/');
-		}
-	}, [isAuthorized, loading, router]);
-
-	if (loading || isAuthorized) {
+	if (loading) {
 		return (
 			<main className='flex flex-col items-center justify-center'>
 				<div className='bg-white p-10 rounded-lg shadow-lg w-full max-w-md'>

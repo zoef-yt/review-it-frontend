@@ -1,48 +1,52 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
+import * as z from 'zod';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 import { useAuth } from '@/context/AuthContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { LoginSchema } from '../schema/login';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { loginFormHandler } from '@/actions/form/loginHandler';
 import { getClientInfo } from '@/actions/getClientInfo';
-
-interface LoginFormFields {
-	usernameOrEmail: string;
-	password: string;
-}
+import { loginFormSchema } from '@/schema/login';
 
 export function LoginForm() {
+	const router = useRouter();
+	const { toast } = useToast();
 	const { recheckSession } = useAuth();
 	const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
+	const [formParent] = useAutoAnimate();
 
-	const {
-		register,
-		handleSubmit,
-		setError,
-		setValue,
-		clearErrors,
-		formState: { errors, isSubmitting },
-	} = useForm<LoginFormFields>({
-		resolver: zodResolver(LoginSchema),
+	const form = useForm<z.infer<typeof loginFormSchema>>({
+		resolver: zodResolver(loginFormSchema),
+		defaultValues: {
+			usernameOrEmail: '',
+			password: '',
+		},
 	});
 
-	const onSubmit: SubmitHandler<LoginFormFields> = async (data) => {
+	const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
 		const navigator = window.navigator.userAgent;
+		toast({ title: 'Logging in...', description: 'Please wait while we log you in.', duration: 1000 });
 		const userInfo = await getClientInfo(navigator, new Date());
 		const result = await loginFormHandler({ ...data, userInfo });
 		if (result.success == false) {
-			setError('usernameOrEmail', {
+			form.setError('root', {
 				type: 'manual',
 				message: result.error,
 			});
+			toast({ title: 'Login failed', description: result.error, duration: 1000, variant: 'destructive' });
 		} else {
-			recheckSession();
+			router.push('/');
+			toast({ title: 'Login successful', description: 'You are now logged in.', duration: 3000, className: 'bg-green-500 text-white' });
+			await recheckSession();
 		}
 	};
 
@@ -50,78 +54,60 @@ export function LoginForm() {
 		<main className='flex flex-col items-center justify-center'>
 			<div className='bg-white p-10 rounded-lg shadow-lg w-full max-w-md'>
 				<h1 className='text-4xl font-bold mb-8 text-center text-gray-800'>Login</h1>
-				<form className='flex flex-col space-y-6' onSubmit={handleSubmit(onSubmit)}>
-					<div>
-						<label className='block text-sm font-medium text-gray-700' htmlFor='usernameOrEmail'>
-							Username or Email
-						</label>
-						<Input
-							id='usernameOrEmail'
-							{...register('usernameOrEmail', { required: 'Username or email is required' })}
-							placeholder='Enter your username or email'
-							type='text'
-							autoFocus
-							autoCapitalize='off'
-							inputMode='email'
-							autoComplete='email'
-							onChange={(e) => {
-								clearErrors('usernameOrEmail');
-								setValue('usernameOrEmail', e.target.value);
-							}}
+				<Form {...form}>
+					<form ref={formParent} onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+						{form.formState.errors.root && <div className='text-red-500 text-sm font-medium'>{form.formState.errors.root.message}</div>}
+						<FormField
+							control={form.control}
+							name='usernameOrEmail'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Username or Email</FormLabel>
+									<FormControl>
+										<Input
+											placeholder='Enter your username or email'
+											{...field}
+											autoFocus
+											autoCapitalize='off'
+											inputMode='email'
+											autoComplete='email'
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
 						/>
-						{errors.usernameOrEmail && <p className='text-red-500 text-sm'>{errors.usernameOrEmail.message}</p>}
-					</div>
-					<div>
-						<label className='block text-sm font-medium text-gray-700' htmlFor='password'>
-							Password
-						</label>
-						<div className='w-full flex gap-2 items-center'>
-							<Input
-								id='password'
-								{...register('password', { required: 'Password is required' })}
-								placeholder='Enter your password'
-								type={passwordVisible ? 'text' : 'password'}
-								className='flex-1'
-								onChange={(e) => {
-									clearErrors('password');
-									setValue('password', e.target.value);
-								}}
-							/>
-							<Button
-								type='button'
-								variant='link'
-								size='sm'
-								onClick={() => setPasswordVisible(!passwordVisible)}
-								tabIndex={-1}
-								className='text-gray-600 hover:text-gray-800'
-							>
-								{passwordVisible ? 'Hide' : 'Show'}
-							</Button>
-						</div>
-						{errors.password && <p className='text-red-500 text-sm'>{errors.password.message}</p>}
-					</div>
-					<div>
-						<Button
-							type='submit'
-							variant='default'
-							size='lg'
-							className={`w-full ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-							disabled={isSubmitting}
-						>
-							{isSubmitting ? 'Logging in...' : 'Login'}
+						<FormField
+							control={form.control}
+							name='password'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Password</FormLabel>
+									<div className='flex items-center space-x-2'>
+										<FormControl>
+											<Input type={passwordVisible ? 'text' : 'password'} placeholder='Enter your password' {...field} />
+										</FormControl>
+										<Button type='button' variant='outline' size='sm' onClick={() => setPasswordVisible(!passwordVisible)}>
+											{passwordVisible ? 'Hide' : 'Show'}
+										</Button>
+									</div>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<Button type='submit' className='w-full' disabled={form.formState.isSubmitting}>
+							{form.formState.isSubmitting ? 'Logging in...' : 'Login'}
 						</Button>
-					</div>
-					<div className='flex justify-center mt-4'>
-						<Link href='/forgot-password' className='text-blue-500 hover:underline'>
-							Forgot Password?
-						</Link>
-					</div>
-					<div className='flex justify-center mt-4'>
-						<Link href='/signup' className='text-blue-500 hover:underline'>
-							Don&apos;t have an account? Sign up
-						</Link>
-					</div>
-				</form>
+					</form>
+				</Form>
+				<div className='flex flex-col items-center space-y-4 mt-6'>
+					<Link href='/forgot-password' className='text-blue-500 hover:underline'>
+						Forgot Password?
+					</Link>
+					<Link href='/signup' className='text-blue-500 hover:underline'>
+						Don&rsquo;t have an account? Sign up
+					</Link>
+				</div>
 			</div>
 		</main>
 	);

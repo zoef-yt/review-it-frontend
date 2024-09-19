@@ -32,8 +32,7 @@ export const loginFormHandler = async (props: LoginFormHandler): Promise<LoginFo
 			loginTime: userInfo.time,
 		},
 		password: password,
-		username: usernameOrEmail.includes('@') ? undefined : usernameOrEmail,
-		email: usernameOrEmail.includes('@') ? usernameOrEmail : undefined,
+		usernameOrEmail,
 	};
 	const response = await makeRequest<LoginApiResponse, typeof data>({
 		method: 'post',

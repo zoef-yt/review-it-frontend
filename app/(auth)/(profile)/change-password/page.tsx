@@ -4,9 +4,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import LoadingIndicator from '@/components/loadingIndicator';
 import { useAuth } from '@/context/AuthContext';
-import { ChangePasswordSchema } from '@/components/auth/schema/changePassword';
+import { ChangePasswordSchema } from '@/schema/changePassword';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';

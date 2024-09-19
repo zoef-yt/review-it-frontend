@@ -13,6 +13,17 @@ export default async function ReviewSection({ params }: ReviewSectionProps) {
 		auth: 'none',
 	});
 
+	const singleReview = await makeRequest<any>({
+		endpoint: `games-review/game/${gameSlug}`,
+		method: 'get',
+		auth: 'bearer',
+	});
+	if (singleReview.success) {
+		console.log(singleReview.data);
+	} else {
+		console.log(singleReview.error);
+	}
+
 	if (!response.success) {
 		return null;
 	}
@@ -44,7 +55,7 @@ export default async function ReviewSection({ params }: ReviewSectionProps) {
 			{reviews.length > 0 ? (
 				<div className='space-y-6'>
 					{reviews.map((review) => (
-						<SingleReview key={review._id} review={review} />
+						<SingleReview key={review._id} review={review} gameSlug={gameSlug} />
 					))}
 				</div>
 			) : (

@@ -37,6 +37,5 @@ export async function getUserId(): Promise<string | null> {
 	const token = await getSession('accessToken');
 	if (!token) return null;
 	const decodedToken = jwt.decode(token) as jwt.JwtPayload;
-	console.log('toke', decodedToken);
 	return decodedToken?.sub ?? null;
 }

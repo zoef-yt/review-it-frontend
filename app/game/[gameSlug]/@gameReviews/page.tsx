@@ -14,20 +14,7 @@ export default async function ReviewSection({ params }: ReviewSectionProps) {
 		method: 'get',
 		auth: 'none',
 	});
-
-	const singleReview = await makeRequest<any>({
-		endpoint: `games-review/game/${gameSlug}`,
-		method: 'get',
-		auth: 'bearer',
-	});
-	if (singleReview.success) {
-		console.log(singleReview.data);
-	} else {
-		console.log(singleReview.error);
-	}
-
 	if (!response.success) {
-		console.log(response.error);
 		return (
 			<Card className='my-8'>
 				<CardContent className='py-8 text-center'>

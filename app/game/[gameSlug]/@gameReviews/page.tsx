@@ -14,14 +14,9 @@ export default async function ReviewSection({ params }: ReviewSectionProps) {
 		method: 'get',
 		auth: 'none',
 	});
+
 	if (!response.success) {
-		return (
-			<Card className='my-8'>
-				<CardContent className='py-8 text-center'>
-					<p className='text-xl text-gray-600'>No reviews yet. Be the first to review!</p>
-				</CardContent>
-			</Card>
-		);
+		return null;
 	}
 
 	const { averageRating, reviewsCount, reviews } = response.data;

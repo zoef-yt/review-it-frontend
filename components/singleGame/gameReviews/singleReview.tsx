@@ -8,7 +8,7 @@ import type { Review } from '@/types/gameReviews';
 
 export function SingleReview({ review, gameSlug }: { review: Review; gameSlug: string }) {
 	const { rating, comment, userID, createdAt } = review;
-	const initials = userID.username.charAt(0).toUpperCase();
+	const initials = userID?.username?.charAt(0)?.toUpperCase();
 	const randomColor = `hsl(${Math.random() * 360}, 70%, 80%)`;
 	return (
 		<Card className='overflow-hidden'>

@@ -4,11 +4,13 @@ import { makeRequest } from '@/actions/makeRequest';
 import { Card, CardContent } from '@/components/ui/card';
 import { SingleReview } from '@/components/singleGame/gameReviews/singleReview';
 import type { ReviewApiResponse, ReviewSectionProps } from '@/types/gameReviews';
+import { getUserId } from '@/libs';
 
 export default async function ReviewSection({ params }: ReviewSectionProps) {
 	const { gameSlug } = params;
+	const userId = await getUserId();
 	const response = await makeRequest<ReviewApiResponse>({
-		endpoint: `games-review/${gameSlug}`,
+		endpoint: `games-review/${gameSlug}?excludeUserId=${userId}`,
 		method: 'get',
 		auth: 'none',
 	});
@@ -25,11 +27,17 @@ export default async function ReviewSection({ params }: ReviewSectionProps) {
 	}
 
 	if (!response.success) {
-		return null;
+		console.log(response.error);
+		return (
+			<Card className='my-8'>
+				<CardContent className='py-8 text-center'>
+					<p className='text-xl text-gray-600'>No reviews yet. Be the first to review!</p>
+				</CardContent>
+			</Card>
+		);
 	}
 
 	const { averageRating, reviewsCount, reviews } = response.data;
-
 	return (
 		<div className='space-y-8 w-full'>
 			<Card className='bg-gradient-to-r from-purple-500 to-indigo-600 text-white'>

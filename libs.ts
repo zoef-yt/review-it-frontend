@@ -1,5 +1,6 @@
 'use server';
 
+import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 
 export async function getSession(key: string): Promise<string | null> {
@@ -30,4 +31,12 @@ export async function removeCookie(key: string): Promise<void> {
 	} catch (error) {
 		console.error('Failed to remove cookie', error);
 	}
+}
+
+export async function getUserId(): Promise<string | null> {
+	const token = await getSession('accessToken');
+	if (!token) return null;
+	const decodedToken = jwt.decode(token) as jwt.JwtPayload;
+	console.log('toke', decodedToken);
+	return decodedToken?.sub ?? null;
 }

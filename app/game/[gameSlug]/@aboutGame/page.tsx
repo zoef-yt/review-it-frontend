@@ -4,7 +4,6 @@ import { Card } from '@/components/ui/card';
 import { SingleGameToast } from '@/components/singleGame/toast';
 import { DescriptionDrawer } from '@/components/singleGame/description';
 import { CustomRatingCard } from '@/components/singleGame/ratingCard';
-import { ReviewComponent } from '@/components/singleGame/reviewComponent';
 import { makeRequest } from '@/actions/makeRequest';
 import { Game } from '@/types/game';
 
@@ -20,6 +19,7 @@ export default async function SingleGamePage({ params }: SingleGamePageProps) {
 		endpoint: `api/games/${params.gameSlug}`,
 		auth: 'none',
 	});
+
 	if (response.success == false) {
 		return <SingleGameToast />;
 	}
@@ -29,15 +29,17 @@ export default async function SingleGamePage({ params }: SingleGamePageProps) {
 	return (
 		<div className='w-full'>
 			<header className='relative w-full h-64 md:h-80 mb-6 overflow-hidden'>
-				<Image
-					src={backgroundImage}
-					alt={name}
-					fill
-					className='rounded-lg shadow-lg bg-top object-cover'
-					priority
-					fetchPriority='high'
-					loading='eager'
-				/>
+				{backgroundImage ? (
+					<Image
+						src={backgroundImage}
+						alt={name}
+						fill
+						className='rounded-lg shadow-lg bg-top object-cover'
+						priority
+						fetchPriority='high'
+						loading='eager'
+					/>
+				) : null}
 				<div className='absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center rounded-lg text-center p-4'>
 					<h1 className='text-white text-xl md:text-4xl font-bold'>{name}</h1>
 				</div>
@@ -84,19 +86,6 @@ export default async function SingleGamePage({ params }: SingleGamePageProps) {
 				</Card>
 				<CustomRatingCard rating={rating} />
 			</section>
-			<ReviewComponent
-				game={{
-					gameID: game.id,
-					gameName: game.name,
-					gameImage: game.backgroundImage,
-					gameSlug: game.slug,
-					description: game.description,
-					genre: game.genres.map((genre) => ({
-						id: genre.id,
-						name: genre.name,
-					})),
-				}}
-			/>
 		</div>
 	);
 }

@@ -27,7 +27,7 @@ export function SingleReview({ review, gameSlug }: { review: Review; gameSlug: s
 					</div>
 					<div className='flex items-center'>
 						<Rating value={rating} precision={0.5} readOnly size='small' />
-						<span className='ml-2 text-sm text-gray-600'>({rating.toFixed(1)})</span>
+						<div className='ml-2 text-sm text-gray-600'>({rating.toFixed(1)})</div>
 						{/* <DeleteReviewButton review={review} gameSlug={gameSlug} /> */}
 					</div>
 				</div>

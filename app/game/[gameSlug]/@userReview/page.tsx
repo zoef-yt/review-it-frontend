@@ -28,8 +28,8 @@ export default async function UserReview({ params }: { params: { gameSlug: strin
 	const game = gameResponse.data;
 	return (
 		<div className='w-full'>
-			<p>{JSON.stringify(gameResponse)}</p>
-			<p>{JSON.stringify(reviewResponse)}</p>
+			<p>game: {JSON.stringify(gameResponse)}</p>
+			<p>Review: {JSON.stringify(reviewResponse)}</p>
 			<ReviewComponent
 				game={{
 					gameID: game.id,

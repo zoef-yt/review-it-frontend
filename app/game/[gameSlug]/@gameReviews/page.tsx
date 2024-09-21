@@ -16,12 +16,13 @@ export default async function ReviewSection({ params }: ReviewSectionProps) {
 	});
 
 	if (!response.success) {
-		return null;
+		return <div>Error fetching reviews{JSON.stringify(response)}</div>;
 	}
 
 	const { averageRating, reviewsCount, reviews } = response.data;
 	return (
 		<div className='space-y-8 w-full'>
+			<div>{JSON.stringify(response)}</div>
 			<Card className='bg-gradient-to-r from-purple-500 to-indigo-600 text-white'>
 				<CardContent className='pt-6'>
 					<h2 className='text-3xl font-bold mb-6'>Game Reviews</h2>

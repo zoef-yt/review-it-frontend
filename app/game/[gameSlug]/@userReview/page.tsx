@@ -16,20 +16,12 @@ export default async function UserReview({ params }: { params: { gameSlug: strin
 		auth: 'none',
 	});
 	if (!gameResponse.success) {
-		return (
-			<div className='w-full'>
-				Error fetching game
-				<p>{JSON.stringify(gameResponse)}</p>
-				<p>{JSON.stringify(reviewResponse)}</p>
-			</div>
-		);
+		return null;
 	}
 
 	const game = gameResponse.data;
 	return (
 		<div className='w-full'>
-			<p>game: {JSON.stringify(gameResponse)}</p>
-			<p>Review: {JSON.stringify(reviewResponse)}</p>
 			<ReviewComponent
 				game={{
 					gameID: game.id,
